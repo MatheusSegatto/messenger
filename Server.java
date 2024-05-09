@@ -12,16 +12,15 @@ public class Server {
 
     public static void main(String[] args) throws IOException {
         int port = 8000;
-        HttpServer server = startServer(port);
+        startServer(port);
         System.out.println("Server started on port " + port);
     }
 
-    private static HttpServer startServer(int port) throws IOException {
+    private static void startServer(int port) throws IOException {
         HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
         server.createContext("/hello", new MyHandler());
         server.setExecutor(null);
         server.start();
-        return server;
     }
 
     static class MyHandler implements HttpHandler {
