@@ -1,3 +1,5 @@
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
@@ -19,6 +21,7 @@ public class Server {
     private static void startServer(int port) throws IOException {
         HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
         server.createContext("/hello", new MyHandler());
+        server.createContext("/message", new MessageHandler());
         server.setExecutor(null);
         server.start();
     }
@@ -28,6 +31,38 @@ public class Server {
         public void handle(HttpExchange exchange) throws IOException {
             String response = "Hello from the server!";
             sendResponse(exchange, response);
+        }
+
+        private void sendResponse(HttpExchange exchange, String response) throws IOException {
+            exchange.sendResponseHeaders(200, response.getBytes().length);
+            OutputStream os = exchange.getResponseBody();
+            os.write(response.getBytes());
+            os.close();
+        }
+    }
+
+    static class MessageHandler implements HttpHandler {
+        @Override
+        public void handle(HttpExchange exchange) throws IOException {
+            if ("POST".equals(exchange.getRequestMethod())) {
+                String message = getMessageFromRequest(exchange);
+                writeMessageToFile(message);
+                sendResponse(exchange, "Message received and saved!");
+            } else {
+                sendResponse(exchange, "Only POST requests are allowed.");
+            }
+        }
+
+        private String getMessageFromRequest(HttpExchange exchange) throws IOException {
+            byte[] requestBodyBytes = exchange.getRequestBody().readAllBytes();
+            return new String(requestBodyBytes);
+        }
+
+        private void writeMessageToFile(String message) throws IOException {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter("messages.txt", true))) {
+                writer.write(message);
+                writer.newLine();
+            }
         }
 
         private void sendResponse(HttpExchange exchange, String response) throws IOException {
