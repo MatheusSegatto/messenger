@@ -3,18 +3,16 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
+  import java.util.HashMap;
+import java.util.Map;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 
 public class Server {
-    private static List<String> clients = new ArrayList<>(); // Lista de clientes
+    private static Map<String, Long> activeClients = new HashMap<>();
 
     public static void main(String[] args) throws IOException {
         int port = 8000;
@@ -29,24 +27,16 @@ public class Server {
         server.setExecutor(null);
         server.start();
         
-        new Thread(() -> {
-            while (true) {
-                pingClients();
-                try {
-                    Thread.sleep(5000); // Pings a cada 5 segundos
-                    System.out.println(clients);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
+        
     }
 
     static class ClientHandler implements HttpHandler {
         public void handle(HttpExchange exchange) throws IOException {
             // Adiciona o endereço IP do cliente à lista de clientes
             String clientAddress = exchange.getRemoteAddress().getAddress().getHostAddress();
-            clients.add(clientAddress);
+            Long timeStamp = System.currentTimeMillis();
+            System.out.println(clientAddress);
+            activeClients.put(clientAddress, timeStamp);
 
             String response = "Conexão Estabelecida com o Servidor!";
             exchange.sendResponseHeaders(200, response.getBytes().length);
@@ -87,29 +77,42 @@ public class Server {
             os.close();
         }
     }
-
-
-    private static void pingClients() {
-        for (String client : clients) {
-            try {
-                // Constrói a URL do cliente
-                @SuppressWarnings("deprecation")
-                URL clientURL = new URL("http://" + client + ":8001/ping"); // Assumindo que o cliente esteja escutando na porta 8001
-                HttpURLConnection connection = (HttpURLConnection) clientURL.openConnection();
-                connection.setRequestMethod("GET");
-
-                int responseCode = connection.getResponseCode();
-                if (responseCode == HttpURLConnection.HTTP_OK) {
-                    System.out.println("Ping successful to client: " + client);
-                } else {
-                    System.out.println("Ping failed to client: " + client + ", response code: " + responseCode);
-                }
-            } catch (IOException e) {
-                System.out.println("Failed to ping client: " + client);
-                e.printStackTrace();
+    
+    
+    private void checkClientActivity() {
+        long currentTime = System.currentTimeMillis();
+        for (Map.Entry<String, Long> entry : activeClients.entrySet()) {
+            String clientId = entry.getKey();
+            Long lastActiveTime = entry.getValue();
+            if (currentTime - lastActiveTime > 10000) { // Tempo limite de inatividade de 10 segundos
+                // Cliente desconectado por inatividade
+                activeClients.remove(clientId);
+                System.out.println("Client " + clientId + " disconnected due to inactivity.");
             }
         }
     }
+
+    // private static void pingClients() {
+    //     for (String client : clients) {
+    //         try {
+    //             // Constrói a URL do cliente
+    //             @SuppressWarnings("deprecation")
+    //             URL clientURL = new URL("http://" + client + ":8001/ping"); // Assumindo que o cliente esteja escutando na porta 8001
+    //             HttpURLConnection connection = (HttpURLConnection) clientURL.openConnection();
+    //             connection.setRequestMethod("GET");
+
+    //             int responseCode = connection.getResponseCode();
+    //             if (responseCode == HttpURLConnection.HTTP_OK) {
+    //                 System.out.println("Ping successful to client: " + client);
+    //             } else {
+    //                 System.out.println("Ping failed to client: " + client + ", response code: " + responseCode);
+    //             }
+    //         } catch (IOException e) {
+    //             System.out.println("Failed to ping client: " + client);
+    //             e.printStackTrace();
+    //         }
+    //     }
+    // }
 }
 
 

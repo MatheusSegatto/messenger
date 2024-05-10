@@ -14,7 +14,7 @@ import java.util.Scanner;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import com.sun.net.httpserver.HttpServer;
+
 
 public class Client {
     public static void main(String[] args) throws IOException, InterruptedException {
@@ -22,7 +22,6 @@ public class Client {
         String message;
 
         stablishConection();
-        //getPing();
 
         do {
             System.out.print("Enter a message (type '--EXIT--' to quit): ");
@@ -36,11 +35,7 @@ public class Client {
         System.out.println("Client stopped.");
     }
 
-    private static void getPing() throws IOException {
-        HttpServer server = HttpServer.create(new InetSocketAddress(8001), 0);
-        server.createContext("/ping", new PingHandler());
-        server.start();
-    }
+
 
     static class PingHandler implements HttpHandler {
         @Override
