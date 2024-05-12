@@ -66,6 +66,7 @@ public class ServerStartUP {
         public void handle(HttpExchange exchange) throws IOException {
             if ("POST".equals(exchange.getRequestMethod())) {
                 String message = getMessageFromRequest(exchange);
+                System.out.println(message);
                 writeMessageToFile(message);
                 sendResponse(exchange, "Message received and saved!");
             } else {
@@ -79,11 +80,31 @@ public class ServerStartUP {
         }
 
         private void writeMessageToFile(String message) throws IOException {
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter("messages.txt", true))) {
-                writer.write(message);
-                writer.newLine();
+            String caminhoArquivo = ".\\messages.txt";
+            
+            try {
+                System.out.println("ENTROU AQUI");
+                // Cria um FileWriter para o arquivo especificado
+                FileWriter fileWriter = new FileWriter(caminhoArquivo);
+
+                // Cria um BufferedWriter para escrever texto de forma eficiente
+                BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+
+                // Escreve a mensagem no arquivo
+                bufferedWriter.write(message);
+                bufferedWriter.newLine(); // Adiciona uma nova linha
+
+                // Feche o BufferedWriter
+                bufferedWriter.close();
+
+
+            } catch (IOException e) {
+                System.out.println("Ocorreu um erro ao escrever no arquivo.");
+                e.printStackTrace();
             }
         }
+            
+
 
         private void sendResponse(HttpExchange exchange, String response) throws IOException {
             exchange.sendResponseHeaders(200, response.getBytes().length);

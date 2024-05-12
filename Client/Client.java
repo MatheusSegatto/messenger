@@ -7,9 +7,6 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Scanner;
 
-
-
-
 public class Client {
     public static void main(String[] args) throws IOException, InterruptedException {
         Scanner scanner = new Scanner(System.in);
@@ -33,7 +30,7 @@ public class Client {
     private static void sendMessage(String message) throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
-            .uri(URI.create("http://localhost:8000/"))
+            .uri(URI.create("http://localhost:8000/message"))
             .header("Content-Type", "text/plain")
             .POST(HttpRequest.BodyPublishers.ofString(message))
             .build();
