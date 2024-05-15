@@ -5,7 +5,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.sun.net.httpserver.HttpExchange;
@@ -105,7 +107,6 @@ public class ServerStartUP {
         }
             
 
-
         private void sendResponse(HttpExchange exchange, String response) throws IOException {
             exchange.sendResponseHeaders(200, response.getBytes().length);
             OutputStream os = exchange.getResponseBody();
@@ -119,18 +120,24 @@ public class ServerStartUP {
             while (true) {
                 long currentTime = System.currentTimeMillis();
                 System.out.println(activeClients);
-                for (Map.Entry<String, Long> entry : activeClients.entrySet()) {
-                    String clientId = entry.getKey();
-                    Long lastActiveTime = entry.getValue();
-                    if (currentTime - lastActiveTime > 10000) { // Tempo limite de inatividade de 10 segundos
-                        activeClients.remove(clientId);
-                        System.out.println("Client " + clientId + " disconnected due to inactivity.");
-                    }
-                }
+
+                List<String> tempRemoveArray = new ArrayList<>();
                 try {
+                    for (Map.Entry<String, Long> entry : activeClients.entrySet()) {
+                        String clientId = entry.getKey();
+                        Long lastActiveTime = entry.getValue();
+                        if (currentTime - lastActiveTime > 10000) { // Tempo limite de inatividade de 10 segundos
+                            System.out.println("Client " + clientId + " disconnected due to inactivity.");
+                            tempRemoveArray.add(clientId);
+                        }
+                    }
+                    for(String item : tempRemoveArray){
+                        activeClients.remove(item);
+                    }
                     Thread.sleep(10000);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    System.out.println("Deu Ruim na Thread de [checkClientActivity]");
+                    // e.printStackTrace();
                 }
             }
         }).start();

@@ -38,7 +38,6 @@ public class Client {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         System.out.println("Response from server: " + response.body());
     }
-
 }
  
 
