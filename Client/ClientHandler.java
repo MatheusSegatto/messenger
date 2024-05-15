@@ -44,7 +44,6 @@ public class ClientHandler {
                     pingServer();
                     Thread.sleep(5000);
                 } catch (IOException | InterruptedException e) {
-                    System.out.println("DEU MERDA");
                     
                     e.printStackTrace();
                 }
@@ -73,8 +72,6 @@ public class ClientHandler {
                 response.append(inputLine);
             }
             in.close();
-        
-            
         } 
     }
 
