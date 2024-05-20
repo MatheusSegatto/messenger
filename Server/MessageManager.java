@@ -3,12 +3,12 @@ package Server;
 import java.util.HashMap;
 import java.util.TreeMap;
 
-import Util.Payload;
+import Util.Mensagem;
 
 public class MessageManager {
 
         
-    private static HashMap<String, TreeMap<Long,Payload>> recentMessages = new HashMap<>();
+    private static HashMap<String, TreeMap<Long,Mensagem>> recentMessages = new HashMap<>();
 
 
     private static void checkIfThereIsMessage() {
