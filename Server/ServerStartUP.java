@@ -48,6 +48,8 @@ public class ServerStartUP {
     static class PingHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
+
+            //verificar se tem alguma mensagem pendente
             Long timeStamp = System.currentTimeMillis();
             // Extrai o sessionID do cabeçalho da solicitação
             String sessionID = exchange.getRequestHeaders().getFirst("sessionID");
