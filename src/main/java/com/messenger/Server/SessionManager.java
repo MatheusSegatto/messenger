@@ -1,4 +1,4 @@
-package Server;
+package com.messenger.Server;
 
 import java.util.UUID;
 

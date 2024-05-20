@@ -1,4 +1,4 @@
-package Server;
+package com.messenger.Server;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -17,7 +17,7 @@ import com.sun.net.httpserver.HttpServer;
 public class ServerStartUP {
 
     private static HashMap<String, Long> activeClients = new HashMap<>();
-    
+
     public static void startServer(int port) throws IOException {
         HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
         server.createContext("/stablishConection", new SetClientOnServer());
@@ -37,7 +37,7 @@ public class ServerStartUP {
 
             String sessionID = (clientAddress + "|" + randomUUID);
             activeClients.put(sessionID, timeStamp);
-            
+
             exchange.sendResponseHeaders(200, sessionID.getBytes().length);
             OutputStream os = exchange.getResponseBody();
             os.write(sessionID.getBytes());
@@ -49,7 +49,7 @@ public class ServerStartUP {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
 
-            //verificar se tem alguma mensagem pendente
+            // verificar se tem alguma mensagem pendente
             Long timeStamp = System.currentTimeMillis();
             // Extrai o sessionID do cabeçalho da solicitação
             String sessionID = exchange.getRequestHeaders().getFirst("sessionID");
@@ -85,7 +85,7 @@ public class ServerStartUP {
 
         private void writeMessageToFile(String message) throws IOException {
             String caminhoArquivo = ".\\messages.txt";
-            
+
             try {
                 System.out.println("ENTROU AQUI");
                 // Cria um FileWriter para o arquivo especificado
@@ -101,13 +101,11 @@ public class ServerStartUP {
                 // Feche o BufferedWriter
                 bufferedWriter.close();
 
-
             } catch (IOException e) {
                 System.out.println("Ocorreu um erro ao escrever no arquivo.");
                 e.printStackTrace();
             }
         }
-            
 
         private void sendResponse(HttpExchange exchange, String response) throws IOException {
             exchange.sendResponseHeaders(200, response.getBytes().length);
@@ -133,7 +131,7 @@ public class ServerStartUP {
                             tempRemoveArray.add(clientId);
                         }
                     }
-                    for(String item : tempRemoveArray){
+                    for (String item : tempRemoveArray) {
                         activeClients.remove(item);
                     }
                     Thread.sleep(10000);

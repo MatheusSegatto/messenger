@@ -1,12 +1,17 @@
-package User;
+package com.messenger.User;
 
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.lang.reflect.Type;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 public class UserManager {
     private Map<String, User> users = new HashMap<>();
-    private static final String FILE_NAME = "users.ser";
+    private static final String FILE_NAME = "users.json";
+    private Gson gson = new Gson();
 
     public UserManager() {
         loadUsers();
@@ -36,20 +41,21 @@ public class UserManager {
         }
     }
 
-    @SuppressWarnings("unchecked")
     private void loadUsers() {
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(FILE_NAME))) {
-            users = (HashMap<String, User>) ois.readObject();
+        try (Reader reader = new FileReader(FILE_NAME)) {
+            Type userMapType = new TypeToken<HashMap<String, User>>() {
+            }.getType();
+            users = gson.fromJson(reader, userMapType);
         } catch (FileNotFoundException e) {
             System.out.println("Arquivo de usuários não encontrado. Um novo será criado.");
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     private void saveUsers() {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_NAME))) {
-            oos.writeObject(users);
+        try (Writer writer = new FileWriter(FILE_NAME)) {
+            gson.toJson(users, writer);
         } catch (IOException e) {
             e.printStackTrace();
         }

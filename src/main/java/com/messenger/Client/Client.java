@@ -1,4 +1,4 @@
-package Client;
+package com.messenger.Client;
 
 import java.io.IOException;
 import java.net.URI;
@@ -11,7 +11,7 @@ public class Client {
     public static void main(String[] args) throws IOException, InterruptedException {
         Scanner scanner = new Scanner(System.in);
         String message;
-        
+
         ClientHandler.stablishConection();
 
         do {
@@ -26,18 +26,15 @@ public class Client {
         System.out.println("Client stopped.");
     }
 
-
     private static void sendMessage(String message) throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
-            .uri(URI.create("http://localhost:8000/message"))
-            .header("Content-Type", "text/plain")
-            .POST(HttpRequest.BodyPublishers.ofString(message))
-            .build();
-        
+                .uri(URI.create("http://localhost:8000/message"))
+                .header("Content-Type", "text/plain")
+                .POST(HttpRequest.BodyPublishers.ofString(message))
+                .build();
+
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         System.out.println("Response from server: " + response.body());
     }
 }
- 
-
