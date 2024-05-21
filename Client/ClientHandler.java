@@ -16,8 +16,6 @@ public class ClientHandler {
         return sessionID;
     }
 
-
-
     public static void stablishConection() throws IOException {
         @SuppressWarnings("deprecation")
         URL url = new URL("http://localhost:8000/stablishConection"); // URL do servidor

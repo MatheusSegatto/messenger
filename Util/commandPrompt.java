@@ -1,6 +1,8 @@
 
 package Util;
 
+import java.util.Scanner;
+
 public class commandPrompt {
 
     public static void clearPrompt(){
@@ -16,5 +18,17 @@ public class commandPrompt {
 
     }
 
-
+    public static void WaitForInteraction() {
+        Scanner scanner = new Scanner(System.in);
+        
+        System.out.println("Press ENTER to continue...");
+        
+        // Espera até que o usuário pressione ENTER
+        scanner.nextLine();
+        
+        
+    }
 }
+
+
+

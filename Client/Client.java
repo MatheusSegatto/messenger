@@ -65,14 +65,17 @@ public class Client {
             String sessionID = ClientHandler.getSessionID();
 
             // Definir os cabeçalhos HTTP
-            postConnection.setRequestProperty("Content-Type", "application/json; utf-8");
-            postConnection.setRequestProperty("Accept", "application/json");
-            postConnection.setRequestProperty("Origin", sessionID);
-            postConnection.setRequestProperty("Referer", "teste");
+            // postConnection.setRequestProperty("Content-Type", "application/json; utf-8");
+            // postConnection.setRequestProperty("Accept", "application/json");
+            // postConnection.setRequestProperty("Origin", sessionID);
+            // postConnection.setRequestProperty("Referer", "teste");
 
             postConnection.setRequestMethod("POST");
             postConnection.setDoOutput(true);
             postConnection.setRequestProperty("Content-Type", "application/json; utf-8");
+
+
+            
             String jsonInputString = "{\"Origem\": \"John\", \"Destino\": 30, \"Conteudo\": 30,}";
 
             try (OutputStream os = postConnection.getOutputStream()) {
