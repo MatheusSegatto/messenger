@@ -1,13 +1,19 @@
 package Server;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class Mensagem {
     private UUID id = UUID.randomUUID();
-    private String content;
     private String remetente; //Colocar como objetos
     private String destinatario; //Colocar como objetos
+    private String content;
     private Long timestamp = System.currentTimeMillis();
+
+    public Mensagem() {
+
+    }
 
     public Mensagem(String content, String remetente, String destinatario) {
         this.content = content;
@@ -53,5 +59,12 @@ public class Mensagem {
 
     public void setTimestamp(Long timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public String objToString(){
+        StringBuilder sb = new StringBuilder();
+        sb.append("{\"Remetente\":" + remetente + "\"Destinatario\":" + destinatario + "\"Content\":" + content + "}");
+
+        return sb.toString();
     }
 }

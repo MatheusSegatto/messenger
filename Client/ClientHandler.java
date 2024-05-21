@@ -12,6 +12,12 @@ import java.net.URL;
 public class ClientHandler {
     private static String sessionID;
 
+    public static String getSessionID() {
+        return sessionID;
+    }
+
+
+
     public static void stablishConection() throws IOException {
         @SuppressWarnings("deprecation")
         URL url = new URL("http://localhost:8000/stablishConection"); // URL do servidor

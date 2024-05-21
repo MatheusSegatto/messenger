@@ -3,6 +3,8 @@ package Client;
 import java.io.IOException;
 import java.util.Scanner;
 
+import Util.commandPrompt;
+
 public class Controller {
     public static void main(String[] args) throws IOException, InterruptedException {
         Scanner scanner = new Scanner(System.in);
@@ -23,12 +25,9 @@ public class Controller {
             opt = scanner.nextInt();
             
 
-            if (System.getProperty("os.name").contains("Windows")) {
-                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
-            }
-
             switch (opt) {
                 case 1:
+                    commandPrompt.clearPrompt();
                     System.out.println("teste");
                     break;
                 case 2:

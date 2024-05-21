@@ -3,8 +3,10 @@ package Server;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,7 +24,7 @@ public class ServerStartUP {
         HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
         server.createContext("/stablishConection", new SetClientOnServer());
         server.createContext("/ping", new PingHandler());
-        server.createContext("/message", new MessageHandler());
+        server.createContext("/sendMessage", new MessageHandler());
         server.setExecutor(null);
         server.start();
         checkClientActivity();
@@ -69,13 +71,36 @@ public class ServerStartUP {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
             if ("POST".equals(exchange.getRequestMethod())) {
-                String message = getMessageFromRequest(exchange);
-                System.out.println(message);
-                writeMessageToFile(message);
-                sendResponse(exchange, "Message received and saved!");
+                // Lê os cabeçalhos da requisição
+                exchange.getRequestHeaders().forEach((k, v) -> 
+                    System.out.println("Header: " + k + " = " + String.join(", ", v)));
+
+                // Lê o corpo da requisição
+                InputStream requestBodyStream = exchange.getRequestBody();
+                String requestBody = new String(requestBodyStream.readAllBytes(), StandardCharsets.UTF_8);
+                System.out.println("Request Body: " + requestBody);
+
+
+
+                // Envia uma resposta de sucesso para o cliente
+                String response = "[SERVER] Message Receved!";
+                exchange.sendResponseHeaders(200, response.getBytes().length);
+                OutputStream os = exchange.getResponseBody();
+                os.write(response.getBytes());
+                os.close();
+
+                // Envia a resposta
+                // String response = "{\"status\":\"success\"}";
+                // exchange.getResponseHeaders().set("Content-Type", "application/json");
+                // exchange.sendResponseHeaders(200, response.getBytes().length);
+                // try (OutputStream os = exchange.getResponseBody()) {
+                //     os.write(response.getBytes(StandardCharsets.UTF_8));
+                // }
             } else {
-                sendResponse(exchange, "Only POST requests are allowed.");
+                // Método não suportado
+                exchange.sendResponseHeaders(405, -1); // 405 Method Not Allowed
             }
+
         }
 
         private String getMessageFromRequest(HttpExchange exchange) throws IOException {
