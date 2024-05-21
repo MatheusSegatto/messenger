@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 import Util.commandPrompt;
 
-public class Controller {
+public class MenuInteracao {
     public static void main(String[] args) throws IOException, InterruptedException {
         Scanner scanner = new Scanner(System.in);
         int opt = -1;
@@ -15,11 +15,12 @@ public class Controller {
             System.out.print("============================================\n");
             System.out.print("                 MENU INICIAL               \n");
             System.out.print("============================================\n");
-            System.out.print("[1] - Enviar Mensagem;\n");
-            System.out.print("[2] - Trocar UserName;\n");
-            System.out.print("[3] - Trocar Senha;\n");
+            System.out.print("[1] - Enviar Mensagem Para um Usuário;\n");
+            System.out.print("[2] - Enviar Mensagem para Todos os Usuários;\n");
+            System.out.print("[3] - Gerenciar Conta;\n");
             System.out.print("[4] - Verificar Usuários Online;\n");
-            System.out.print("[5] - Sair;\n");
+            System.out.print("[5] - Ver Histórico de Mensagem;\n");
+            System.out.print("[6] - Sair;\n");
             System.out.print("Digite a opção desejada:\n");
 
             opt = scanner.nextInt();
@@ -68,6 +69,13 @@ public class Controller {
         }
         scanner.close();
     
+    }
+
+    
+    public void Login(){
+        System.out.println("================ LOGIN ================");
+        System.out.println("Username:");
+        System.out.println("Senha:");
     }
 
 }
