@@ -44,22 +44,23 @@ public class MenuInteracao {
 
     public static void menuLogin() {
         Scanner scanner = new Scanner(System.in);
-        // UserManager userManager = new UserManager();
 
         commandPrompt.clearPrompt();
         System.out.print("============================================\n");
         System.out.print("                     LOGIN                  \n");
         System.out.print("============================================\n");
-        String userName = "";
-        String passWord = "";
         System.out.println("- USERNAME: ");
-        userName = scanner.nextLine();
+        String userName = scanner.nextLine();
         System.out.println("- PASSWORD:");
-        passWord = scanner.nextLine();
+        String passWord = scanner.nextLine();
 
         scanner.close();
 
-        return;
+        if (!userManager.authenticate(userName, passWord)) {
+            System.out.println("\n\n[ATTENTION]: User or password incorrect!\n\n");
+            commandPrompt.WaitForInteraction();
+            menuLogin();
+        }
     }
 
     public static void menuInicial() {
