@@ -16,6 +16,8 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 
+import Util.dataTools;
+
 public class ServerStartUP {
 
     private static HashMap<String, Long> activeClients = new HashMap<>();
@@ -72,13 +74,15 @@ public class ServerStartUP {
         public void handle(HttpExchange exchange) throws IOException {
             if ("POST".equals(exchange.getRequestMethod())) {
                 // Lê os cabeçalhos da requisição
-                exchange.getRequestHeaders().forEach((k, v) -> 
-                    System.out.println("Header: " + k + " = " + String.join(", ", v)));
+                exchange.getRequestHeaders().forEach((k, v) -> System.out.println("Header: " + k + " = " + String.join(", ", v)));
 
                 // Lê o corpo da requisição
                 InputStream requestBodyStream = exchange.getRequestBody();
                 String requestBody = new String(requestBodyStream.readAllBytes(), StandardCharsets.UTF_8);
                 System.out.println("Request Body: " + requestBody);
+
+                Mensagem newMessage = dataTools.convertStringToMensagem(requestBody);
+                
 
 
 

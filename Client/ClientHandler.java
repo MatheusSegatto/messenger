@@ -11,9 +11,27 @@ import java.net.URL;
 
 public class ClientHandler {
     private static String sessionID;
+    private static String userName;
+    private static String userNameDestino;
 
     public static String getSessionID() {
         return sessionID;
+    }
+
+    public static String getUserName() {
+        return userName;
+    }
+
+    public static void setUserName(String username) {
+        ClientHandler.userName = username;
+    }
+
+    public static String getUserNameDestino() {
+        return userNameDestino;
+    }
+
+    public static void setUserNameDestino(String userNameDestino) {
+        ClientHandler.userNameDestino = userNameDestino;
     }
 
     public static void stablishConection() throws IOException {
@@ -78,6 +96,12 @@ public class ClientHandler {
             in.close();
         } 
     }
+
+    public static void setSessionID(String sessionID) {
+        ClientHandler.sessionID = sessionID;
+    }
+
+    
 
 }
 

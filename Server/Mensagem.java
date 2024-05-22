@@ -1,7 +1,6 @@
 package Server;
 
-import java.util.HashMap;
-import java.util.Map;
+
 import java.util.UUID;
 
 public class Mensagem {
@@ -61,10 +60,15 @@ public class Mensagem {
         this.timestamp = timestamp;
     }
 
-    public String objToString(){
-        StringBuilder sb = new StringBuilder();
-        sb.append("{\"Remetente\":" + remetente + "\"Destinatario\":" + destinatario + "\"Content\":" + content + "}");
+    // public String objToString(){
+    //     StringBuilder sb = new StringBuilder();
+    //     sb.append("{\"Remetente\":" + remetente + "\"Destinatario\":" + destinatario + "\"Content\":" + content + "}");
 
-        return sb.toString();
+    //     return sb.toString();
+    // }
+
+    @Override
+    public String toString() {
+        return "{\"Remetente\":" + remetente + "\"Destinatario\":" + destinatario + "\"Content\":" + content + "}";
     }
 }

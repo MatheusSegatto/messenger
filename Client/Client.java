@@ -10,7 +10,7 @@ import java.net.URL;
 
 import java.util.Scanner;
 
-import Server.Mensagem;
+import Util.dataTools;
 
 public class Client {
     public static void main(String[] args) throws IOException, InterruptedException {
@@ -19,9 +19,13 @@ public class Client {
         
         ClientHandler.stablishConection();
 
-        Mensagem teste = new Mensagem("ok", "ok", "ok");
+        System.out.print("Qual seu Username: ");
+        String userName = scanner.nextLine();
+        ClientHandler.setUserName(userName);
 
-
+        System.out.print("Qual o Username do destinatario: ");
+        String userNameDestino = scanner.nextLine();
+        ClientHandler.setUserNameDestino(userNameDestino);
 
         do {
             System.out.print("Enter a message (type '--EXIT--' to quit): ");
@@ -36,50 +40,24 @@ public class Client {
     }
 
 
-    // private static void sendMessage(String message) throws IOException, InterruptedException {
-    //     HttpClient client = HttpClient.newHttpClient();
-    //     HttpRequest request = HttpRequest.newBuilder()
-    //         .uri(URI.create("http://localhost:8000/message"))
-    //         .header("Content-Type", "text/plain")
-    //         .POST(HttpRequest.BodyPublishers.ofString(message))
-    //         .build();
-    //         connection.setRequestMethod("POST");
-    //         connection.setDoOutput(true);
-            
-    //         // Definir os cabeçalhos HTTP
-    //         connection.setRequestProperty("Content-Type", "application/json; utf-8");
-    //         connection.setRequestProperty("Accept", "application/json");
-    //         connection.setRequestProperty("Origin", "https://example.com");
-    //         connection.setRequestProperty("Referer", "https://example.com/page");
-        
-    //     HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-    //     System.out.println("Response from server: " + response.body());
-    // }
 
     private static void sendMessage(String message) throws IOException, InterruptedException {
             @SuppressWarnings("deprecation")
             URL url = new URL("http://localhost:8000/sendMessage");
 
             HttpURLConnection postConnection = (HttpURLConnection) url.openConnection();
-            
-            String sessionID = ClientHandler.getSessionID();
-
-            // Definir os cabeçalhos HTTP
-            // postConnection.setRequestProperty("Content-Type", "application/json; utf-8");
-            // postConnection.setRequestProperty("Accept", "application/json");
-            // postConnection.setRequestProperty("Origin", sessionID);
-            // postConnection.setRequestProperty("Referer", "teste");
-
+         
             postConnection.setRequestMethod("POST");
             postConnection.setDoOutput(true);
             postConnection.setRequestProperty("Content-Type", "application/json; utf-8");
 
 
             
-            String jsonInputString = "{\"Origem\": \"John\", \"Destino\": 30, \"Conteudo\": 30,}";
+            String mensagemFormated = dataTools.setStringMessage(ClientHandler.getUserName(), ClientHandler.getUserNameDestino(), message);
+
 
             try (OutputStream os = postConnection.getOutputStream()) {
-                byte[] input = jsonInputString.getBytes("utf-8");
+                byte[] input = mensagemFormated.getBytes("utf-8");
                 os.write(input, 0, input.length);
             }
 
@@ -94,7 +72,7 @@ public class Client {
                     response.append(inputLine);
                 }
                 in.close();
-                sessionID = response.toString();
+
 
                 System.out.println("Response from Server: " + response.toString());
             }  

@@ -7,7 +7,7 @@ import Server.Mensagem;
 
 public class dataTools {
 
-    public static Mensagem convertStringToObj(String jsonString) {
+    public static Mensagem convertStringToMensagem(String jsonString) {
         // Remover chaves desnecessárias
         jsonString = jsonString.replaceAll("[{}\"]", "");
         
