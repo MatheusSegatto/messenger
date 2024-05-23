@@ -1,13 +1,22 @@
 package User;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.TreeMap;
 import java.util.UUID;
+
+import Server.Mensagem;
 
 public class User implements Serializable {
     private static final long serialVersionUID = 1L;
     private String id;
     private String username;
     private String password;
+                       //TimeStamp //obj
+    private static TreeMap<Long, Mensagem> sentMessages = new TreeMap<>();
+    private static TreeMap<Long, Mensagem> receivedMessages = new TreeMap<>();
+
+
 
     public User(String username, String password) {
         this.id = UUID.randomUUID().toString();

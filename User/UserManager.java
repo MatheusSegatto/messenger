@@ -3,11 +3,15 @@ package User;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
+
+import Server.Mensagem;
 
 public class UserManager {
     private Map<String, User> users = new HashMap<>();
     private static final String FILE_NAME = "users.ser";
     private static UserManager instance;
+
 
     public UserManager() {
         loadUsers();

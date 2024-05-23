@@ -1,5 +1,10 @@
 package Util;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,4 +39,47 @@ public class dataTools {
         String mensagem = "{\"Remetente\":" + remetente + "\"Destinatario\":" + destinatario + "\"Content\":" + content + "}";
         return mensagem;
     }
+
+    public static String objetoParaString(Object obj) throws IOException {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+        objectOutputStream.writeObject(obj);
+        objectOutputStream.flush();
+        objectOutputStream.close();
+        return byteArrayOutputStream.toString("ISO-8859-1");
+    }
+
+    public static Object stringParaObjeto(String str) throws IOException, ClassNotFoundException {
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(str.getBytes("ISO-8859-1"));
+        ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
+        return objectInputStream.readObject();
+    }
 }
+
+// public static String serializeHashMap(Payload payload) {
+//     try {
+//         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+//         ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+//         objectOutputStream.writeObject(payload);
+//         objectOutputStream.close();
+//         return byteArrayOutputStream.toString("ISO-8859-1");
+
+//     } catch (IOException e) {
+//         e.printStackTrace();
+//         return null;
+//     }
+// }
+
+// public static Mensagem deserializeHashMap(String payloadString) {
+//         try {
+//             ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(payloadString.getBytes("ISO-8859-1"));
+//             ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
+//             Mensagem mapa = (Mensagem) objectInputStream.readObject();
+//             objectInputStream.close();
+//             return mapa;
+
+//         }catch (IOException | ClassNotFoundException e) {
+//             e.printStackTrace();
+//             return null;
+//     }
+// }

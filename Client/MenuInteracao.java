@@ -123,10 +123,6 @@ public class MenuInteracao {
             menuCreateAccount();
         }
 
-        // System.out.println(userNameCreate);
-        // System.out.println(passWordCreate);
-        // System.out.println(confirmPassWordCreate);
-        // confirmPassWordCreate = scanner.nextLine();
 
         if (!userManager.addUser(userNameCreate, passWordCreate)) {
             System.out.println("\n\n[ATTENTION]: User already exists!\n\n");

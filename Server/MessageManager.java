@@ -1,7 +1,11 @@
 package Server;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.TreeMap;
+
+import Util.dataTools;
+
 
 
 
@@ -12,18 +16,33 @@ public class MessageManager {
     //Key = UserName de destino      //Key = TimeStamp
 
 
-    private static void checkIfThereIsMessage() {
+    public static boolean checkIfThereIsMessage(String userNameDestinatario) {
+        if(recentMessages.containsKey(userNameDestinatario)){
+            return true;
+        }
+        return false;
+    }
 
+    public static String getMessageRecent(String userNameDestinatario) throws IOException {
+        
+        TreeMap<Long,Mensagem> tempMap = recentMessages.get(userNameDestinatario);
+        recentMessages.remove(userNameDestinatario);
+
+        return dataTools.objetoParaString(tempMap);
     }
 
     public static void addNewMessage(Mensagem newMessage){
-
-        TreeMap<Long,Mensagem> tempMap = new TreeMap<>();
-        tempMap.put(newMessage.getTimestamp(), newMessage);
-
-        recentMessages.put(newMessage.getDestinatario(), tempMap);
-
-
+        if (recentMessages.containsKey(newMessage.getDestinatario())){
+            TreeMap<Long,Mensagem> tempMap = recentMessages.get(newMessage.getDestinatario());
+            tempMap.put(newMessage.getTimestamp(), newMessage);
+            //recentMessages.put(newMessage.getDestinatario(), tempMap);
+        }else{
+            TreeMap<Long,Mensagem> tempMap = new TreeMap<>();
+            tempMap.put(newMessage.getTimestamp(), newMessage);
+    
+            recentMessages.put(newMessage.getDestinatario(), tempMap);
+        }
+        
 
     }
 
