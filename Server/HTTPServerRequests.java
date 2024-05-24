@@ -1,0 +1,21 @@
+package Server;
+
+
+import java.io.IOException;
+
+import java.net.InetSocketAddress;
+
+import com.sun.net.httpserver.HttpServer;
+
+
+public class HTTPServerRequests {
+    public static void startServer(int port) throws IOException {
+        HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
+        server.createContext("/stablishConection", new HandleRequests.SetClientOnServer());
+        server.createContext("/ping", new HandleRequests.PingHandler());
+        server.createContext("/sendMessage", new HandleRequests.MessageReceiver());
+        server.setExecutor(null);
+        server.start();
+        HandleRequests.checkClientActivity();
+    }
+}

@@ -1,38 +1,26 @@
 package Server;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import com.sun.net.httpserver.HttpServer;
 
+import Model.Mensagem;
 import Util.dataTools;
 
-public class ServerStartUP {
+public class HandleRequests {
 
     private static HashMap<String, Long> activeClients = new HashMap<>();
     
-    public static void startServer(int port) throws IOException {
-        HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
-        server.createContext("/stablishConection", new SetClientOnServer());
-        server.createContext("/ping", new PingHandler());
-        server.createContext("/sendMessage", new MessageReceiver());
-        server.setExecutor(null);
-        server.start();
-        checkClientActivity();
-    }
-
-    static class SetClientOnServer implements HttpHandler {
+    static public class SetClientOnServer implements HttpHandler {
         public void handle(HttpExchange exchange) throws IOException {
             if ("POST".equals(exchange.getRequestMethod())) {
                 // Lê os cabeçalhos da requisição
@@ -55,7 +43,7 @@ public class ServerStartUP {
         }
     }
 
-    static class PingHandler implements HttpHandler {
+    static public class PingHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
 
@@ -65,35 +53,41 @@ public class ServerStartUP {
             String userNameConected = exchange.getRequestHeaders().getFirst("userName");
 
             activeClients.put(userNameConected, timeStamp);
-
+            
             //Verificar se tem alguma mensagem
             if (MessageManager.checkIfThereIsMessage(userNameConected)){
-
+                TreeMap<Long, Mensagem> messagesReceved = MessageManager.getRecentMessages(userNameConected);
+                String response = dataTools.serializeTreeMapToString(messagesReceved);
+                exchange.sendResponseHeaders(200, response.getBytes().length);
+                OutputStream os = exchange.getResponseBody();
+                os.write(response.getBytes());
+                os.close();
+                return;
             }
-
+            
             // Envia uma resposta de sucesso para o cliente
-            String response = "Pong from server";
+            String response = "false";
             exchange.sendResponseHeaders(200, response.getBytes().length);
             OutputStream os = exchange.getResponseBody();
             os.write(response.getBytes());
             os.close();
+
+            
         }
     }
 
-    static class MessageReceiver implements HttpHandler {
+    static public class MessageReceiver implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
             if ("POST".equals(exchange.getRequestMethod())) {
-                // Lê os cabeçalhos da requisição
-                //exchange.getRequestHeaders().forEach((k, v) -> System.out.println("Header: " + k + " = " + String.join(", ", v)));
-
+            
                 // Lê o corpo da requisição
                 InputStream requestBodyStream = exchange.getRequestBody();
                 String requestBody = new String(requestBodyStream.readAllBytes(), StandardCharsets.UTF_8);
                 
 
                 try {
-                    Mensagem newMessage = (Mensagem) dataTools.stringParaObjeto(requestBody);
+                    Mensagem newMessage = (Mensagem) dataTools.stringToObj(requestBody);
                     System.out.println("newMessage: " + newMessage.getContent() + " " + newMessage.getDestinatario() + " " + newMessage.getRemetente());
                     MessageManager.addNewMessage(newMessage);
 
@@ -119,54 +113,52 @@ public class ServerStartUP {
 
         }
 
-        private String getMessageFromRequest(HttpExchange exchange) throws IOException {
-            byte[] requestBodyBytes = exchange.getRequestBody().readAllBytes();
-            return new String(requestBodyBytes);
-        }
+        
 
-        private void writeMessageToFile(String message) throws IOException {
-            String caminhoArquivo = ".\\messages.txt";
+        // private String getMessageFromRequest(HttpExchange exchange) throws IOException {
+        //     byte[] requestBodyBytes = exchange.getRequestBody().readAllBytes();
+        //     return new String(requestBodyBytes);
+        // }
+
+        // private void writeMessageToFile(String message) throws IOException {
+        //     String caminhoArquivo = ".\\messages.txt";
             
-            try {
-                System.out.println("ENTROU AQUI");
-                // Cria um FileWriter para o arquivo especificado
-                FileWriter fileWriter = new FileWriter(caminhoArquivo);
+        //     try {
+        //         System.out.println("ENTROU AQUI");
+        //         // Cria um FileWriter para o arquivo especificado
+        //         FileWriter fileWriter = new FileWriter(caminhoArquivo);
 
-                // Cria um BufferedWriter para escrever texto de forma eficiente
-                BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+        //         // Cria um BufferedWriter para escrever texto de forma eficiente
+        //         BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 
-                // Escreve a mensagem no arquivo
-                bufferedWriter.write(message);
-                bufferedWriter.newLine(); // Adiciona uma nova linha
+        //         // Escreve a mensagem no arquivo
+        //         bufferedWriter.write(message);
+        //         bufferedWriter.newLine(); // Adiciona uma nova linha
 
-                // Feche o BufferedWriter
-                bufferedWriter.close();
+        //         // Feche o BufferedWriter
+        //         bufferedWriter.close();
 
 
-            } catch (IOException e) {
-                System.out.println("Ocorreu um erro ao escrever no arquivo.");
-                e.printStackTrace();
-            }
-        }
+        //     } catch (IOException e) {
+        //         System.out.println("Ocorreu um erro ao escrever no arquivo.");
+        //         e.printStackTrace();
+        //     }
+        // }
             
 
-        private void sendResponse(HttpExchange exchange, String response) throws IOException {
-            exchange.sendResponseHeaders(200, response.getBytes().length);
-            OutputStream os = exchange.getResponseBody();
-            os.write(response.getBytes());
-            os.close();
-        }
+        // private void sendResponse(HttpExchange exchange, String response) throws IOException {
+        //     exchange.sendResponseHeaders(200, response.getBytes().length);
+        //     OutputStream os = exchange.getResponseBody();
+        //     os.write(response.getBytes());
+        //     os.close();
+        // }
     }
 
-
-
-
-    //OK
-    private static void checkClientActivity() {
+    public static void checkClientActivity() {
         new Thread(() -> {
             while (true) {
                 long currentTime = System.currentTimeMillis();
-                System.out.println(activeClients);
+                //System.out.println(activeClients);
 
                 List<String> tempRemoveArray = new ArrayList<>();
                 try {
@@ -181,7 +173,7 @@ public class ServerStartUP {
                     for(String item : tempRemoveArray){
                         activeClients.remove(item);
                     }
-                    Thread.sleep(5000);
+                    Thread.sleep(10000);
                 } catch (InterruptedException e) {
                     System.out.println("Deu Ruim na Thread de [checkClientActivity]");
                     // e.printStackTrace();
@@ -189,4 +181,9 @@ public class ServerStartUP {
             }
         }).start();
     }
+
+
+
+
+
 }

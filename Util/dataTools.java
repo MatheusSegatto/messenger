@@ -5,42 +5,18 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Base64;
+import java.util.TreeMap;
 
-import Server.Mensagem;
+import Model.Mensagem;
+
 
 public class dataTools {
 
-    public static Mensagem convertStringToMensagem(String jsonString) {
-        // Remover chaves desnecessárias
-        jsonString = jsonString.replaceAll("[{}\"]", "");
-        
-        // Dividir a string em pares chave-valor
-        String[] pairs = jsonString.split(",");
-        
-        // Criar um mapa para armazenar os pares chave-valor
-        Map<String, String> map = new HashMap<>();
-        for (String pair : pairs) {
-            String[] keyValue = pair.split(":");
-            map.put(keyValue[0].trim(), keyValue[1].trim());
-        }
-        
-        // Criar e preencher o objeto Dados
-        Mensagem newMensage = new Mensagem();
-        newMensage.setRemetente(map.get("Remetente"));
-        newMensage.setDestinatario(map.get("Destinatario"));
-        newMensage.setContent(map.get("Content"));
-        
-        return newMensage;
-    }
+ 
 
-    public static String setStringMessage(String remetente, String destinatario, String content) {
-        String mensagem = "{\"Remetente\":" + remetente + "\"Destinatario\":" + destinatario + "\"Content\":" + content + "}";
-        return mensagem;
-    }
 
-    public static String objetoParaString(Object obj) throws IOException {
+    public static String objToString(Object obj) throws IOException {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
         objectOutputStream.writeObject(obj);
@@ -49,10 +25,33 @@ public class dataTools {
         return byteArrayOutputStream.toString("ISO-8859-1");
     }
 
-    public static Object stringParaObjeto(String str) throws IOException, ClassNotFoundException {
+    public static Object stringToObj(String str) throws IOException, ClassNotFoundException {
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(str.getBytes("ISO-8859-1"));
         ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
         return objectInputStream.readObject();
+    }
+
+    @SuppressWarnings("unchecked")
+    public static TreeMap<Long, Mensagem> deserializeStringToTreeMap(String data) {
+        try {
+            byte[] bytes = Base64.getDecoder().decode(data);
+            try (ByteArrayInputStream byteIn = new ByteArrayInputStream(bytes);
+                 ObjectInputStream in = new ObjectInputStream(byteIn)) {
+                return (TreeMap<Long, Mensagem>) in.readObject();
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            // Lidar com a exceção
+            e.printStackTrace();
+            return null; // ou outra ação apropriada
+        }
+    }
+    public static String serializeTreeMapToString(TreeMap<Long, Mensagem> treeMap) throws IOException {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream)) {
+            objectOutputStream.writeObject(treeMap);
+        }
+        byte[] serializedBytes = byteArrayOutputStream.toByteArray();
+        return Base64.getEncoder().encodeToString(serializedBytes);
     }
 }
 

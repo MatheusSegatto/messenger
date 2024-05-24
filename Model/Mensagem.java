@@ -1,10 +1,10 @@
-package Server;
+package Model;
 
 
 import java.io.Serializable;
 import java.util.UUID;
 
-public class Mensagem  implements Serializable {
+public class Mensagem implements Serializable {
     private String id = UUID.randomUUID().toString();
     private String remetente; //Colocar como objetos
     private String destinatario; //Colocar como objetos
@@ -15,10 +15,10 @@ public class Mensagem  implements Serializable {
 
     }
 
-    public Mensagem(String content, String remetente, String destinatario) {
-        this.content = content;
+    public Mensagem(String remetente, String destinatario, String content) {
         this.remetente = remetente;
         this.destinatario = destinatario;
+        this.content = content;
     }
 
     public String getId() {

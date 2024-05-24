@@ -6,7 +6,7 @@ public class Server {
     
     public static void main(String[] args) throws IOException {
         int port = 8000;
-        ServerStartUP.startServer(port);
+        HTTPServerRequests.startServer(port);
         System.out.println("Server started on port " + port);
     }
 }

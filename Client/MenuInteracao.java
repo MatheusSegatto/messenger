@@ -3,10 +3,9 @@ package Client;
 import java.io.IOException;
 import java.util.Scanner;
 
+import Server.UserManager;
 import Util.commandPrompt;
 import Util.dataTools;
-
-import User.UserManager;
 
 public class MenuInteracao {
     private static UserManager userManager = new UserManager();

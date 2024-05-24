@@ -1,11 +1,11 @@
-package User;
+package Server;
 
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
-import Server.Mensagem;
+import Model.User;
 
 public class UserManager {
     private Map<String, User> users = new HashMap<>();

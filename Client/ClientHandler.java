@@ -1,18 +1,24 @@
 package Client;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
+import java.util.TreeMap;
 
+import Util.dataTools;
+import Model.Mensagem;
+import Model.User;
 
 //Classe Estatica
 
 public class ClientHandler {
-    private static String sessionID;
+    private static User userConected;
     private static String userName;
     private static String userNameDestino;
 
@@ -55,7 +61,7 @@ public class ClientHandler {
             while (true) {
                 try {
                     pingServer();
-                    Thread.sleep(1000);
+                    Thread.sleep(5000);
                 } catch (IOException | InterruptedException e) {
                     
                     e.printStackTrace();
@@ -70,11 +76,20 @@ public class ClientHandler {
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         
-        // Define o sessionID no cabeçalho da solicitação
+        // Define o userName no cabeçalho da solicitação
         connection.setRequestProperty("userName", userName);
+
+        String requestBody = userName;
+
+        // Enviando para servidor
+        // Escreve o corpo da requisição no fluxo de saída
+        // try (DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream())) {
+        //     outputStream.writeBytes(requestBody);
+        //     outputStream.flush();
+        // }
         
         int responseCode = connection.getResponseCode();
-    
+        
         if (responseCode == HttpURLConnection.HTTP_OK) {
             BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String inputLine;
@@ -84,17 +99,23 @@ public class ClientHandler {
                 response.append(inputLine);
             }
             in.close();
+
+            if (!(response.toString().equals("false"))) {
+                TreeMap<Long, Mensagem> recevedMessages = dataTools.deserializeStringToTreeMap(response.toString());
+
+                for (Map.Entry<Long, Mensagem> entry : recevedMessages.entrySet()) {
+                    Mensagem mensagens = entry.getValue();
+                    System.out.println("["+ mensagens.getRemetente() +"]: " + mensagens.getContent());
+                   
+                }
+                //System.out.println(recevedMessages);
+            }
+
+            
         } 
     }
 
-    public static void setSessionID(String sessionID) {
-        ClientHandler.sessionID = sessionID;
-    }
 
-    
-    public static String getSessionID() {
-        return sessionID;
-    }
 
     public static String getUserName() {
         return userName;

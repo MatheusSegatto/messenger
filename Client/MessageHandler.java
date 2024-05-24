@@ -8,11 +8,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Scanner;
 
-import Server.Mensagem;
+import Model.Mensagem;
 import Util.dataTools;
 
 public class MessageHandler {
-
+    //Criando o chatzin de teste
     public static void messageSide() throws IOException, InterruptedException{
         Scanner scanner = new Scanner(System.in);
         String message;
@@ -38,11 +38,14 @@ public class MessageHandler {
         postConnection.setRequestMethod("POST");
         postConnection.setDoOutput(true);
         postConnection.setRequestProperty("Content-Type", "application/json; utf-8");
+
+        //Criando o objeto mensagem
         Mensagem newMensage = new Mensagem(ClientHandler.getUserName(), ClientHandler.getUserNameDestino(), message);
-        System.out.println("newMessage CLIENT: " + newMensage.getContent() + " " + newMensage.getDestinatario() + " " + newMensage.getRemetente());
+
+        // O que falta nessa fun
 
         try{
-            String mensagemFormated = dataTools.objetoParaString(newMensage);
+            String mensagemFormated = dataTools.objToString(newMensage);
             try (OutputStream os = postConnection.getOutputStream()) {
                 byte[] input = mensagemFormated.getBytes("utf-8");
                 os.write(input, 0, input.length);
@@ -51,10 +54,6 @@ public class MessageHandler {
             System.out.println("[CLIENT]: Error Mensagem");
         }
         
-
-
-        
-
 
         int responseCode = postConnection.getResponseCode();
         if (responseCode == HttpURLConnection.HTTP_OK) {
