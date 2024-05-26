@@ -117,6 +117,9 @@ public class HandleRequests {
 
                 UserManager userManager = UserManager.getInstance();
                 boolean passwordChanged = userManager.changePassword(username, oldPassword, newPassword);
+
+                // print de debug
+                System.out.println("Password changed: " + passwordChanged);
                 String response;
 
                 if (passwordChanged) {

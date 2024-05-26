@@ -34,6 +34,8 @@ public class ClientHandler {
 
             String credentials = userName + "," + currentPassword + "," + newPassword;
 
+            System.out.println(credentials);
+
             byte[] outputBytes = credentials.getBytes(StandardCharsets.UTF_8);
             OutputStream os = connection.getOutputStream();
             os.write(outputBytes);
@@ -217,6 +219,7 @@ public class ClientHandler {
     }
 
     public static void setUserConected(User userConected) {
+        ClientHandler.userName = userConected.getUsername();
         ClientHandler.userConected = userConected;
     }
 
