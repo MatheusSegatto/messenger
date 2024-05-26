@@ -19,15 +19,96 @@ import Model.User;
 
 public class ClientHandler {
     private static User userConected;
+
     private static String userName;
     private static String userNameDestino;
+
+    public static boolean changePassword(String currentPassword, String newPassword) {
+        try {
+            @SuppressWarnings("deprecation")
+            URL url = new URL("http://localhost:8000/changePassword"); // URL do servidor
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+            connection.setRequestMethod("POST");
+            connection.setDoOutput(true);
+
+            String credentials = userName + "," + currentPassword + "," + newPassword;
+
+            byte[] outputBytes = credentials.getBytes(StandardCharsets.UTF_8);
+            OutputStream os = connection.getOutputStream();
+            os.write(outputBytes);
+            os.close();
+
+            int responseCode = connection.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                System.out.println("Password changed successfully");
+                return true;
+            } else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
+                System.out.println("Password change failed");
+            } else {
+                System.out.println("Request failed with response code: " + responseCode);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
+
+    }
+
+    public static boolean authenticate(String username, String password) throws IOException {
+        @SuppressWarnings("deprecation")
+        URL url = new URL("http://localhost:8000/authenticate"); // URL do servidor
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+        connection.setRequestMethod("POST");
+        connection.setDoOutput(true);
+
+        String credentials = username + "," + password;
+
+        byte[] outputBytes = credentials.getBytes(StandardCharsets.UTF_8);
+        OutputStream os = connection.getOutputStream();
+        os.write(outputBytes);
+        os.close();
+
+        int responseCode = connection.getResponseCode();
+        if (responseCode == HttpURLConnection.HTTP_OK) {
+            System.out.println("Authentication successful");
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String inputLine;
+            StringBuffer response = new StringBuffer();
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+
+            String requestBody = response.toString();
+            try {
+                User newUser = (User) dataTools.stringToObj(requestBody);
+                setUserConected(newUser);
+
+                System.out.println("User: " + newUser.getUsername() + " logged in successfully");
+
+                return true;
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        } else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
+            System.out.println("Authentication failed");
+        } else {
+            System.out.println("Request failed with response code: " + responseCode);
+        }
+        return false;
+    }
 
     public static void stablishConection() throws IOException {
 
         @SuppressWarnings("deprecation")
         URL url = new URL("http://localhost:8000/stablishConection"); // URL do servidor
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        
+
         connection.setRequestMethod("POST");
         connection.setDoOutput(true);
         connection.setRequestProperty("Content-Type", "application/json; utf-8");
@@ -37,7 +118,7 @@ public class ClientHandler {
             byte[] input = userName.getBytes(StandardCharsets.UTF_8);
             os.write(input, 0, input.length);
         }
-        
+
         try {
             int responseCode = connection.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) {
@@ -50,7 +131,7 @@ public class ClientHandler {
                 }
                 in.close();
                 System.out.println("Conection established with the server side!: " + response.toString());
-            }   
+            }
 
         } catch (Exception e) {
             System.out.println("FAILED: Wasn't possible to stablish a conection to the Server!");
@@ -63,7 +144,7 @@ public class ClientHandler {
                     pingServer();
                     Thread.sleep(5000);
                 } catch (IOException | InterruptedException e) {
-                    
+
                     e.printStackTrace();
                 }
             }
@@ -75,7 +156,7 @@ public class ClientHandler {
         URL url = new URL("http://localhost:8000/ping");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
-        
+
         // Define o userName no cabeçalho da solicitação
         connection.setRequestProperty("userName", userName);
 
@@ -83,18 +164,19 @@ public class ClientHandler {
 
         // Enviando para servidor
         // Escreve o corpo da requisição no fluxo de saída
-        // try (DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream())) {
-        //     outputStream.writeBytes(requestBody);
-        //     outputStream.flush();
+        // try (DataOutputStream outputStream = new
+        // DataOutputStream(connection.getOutputStream())) {
+        // outputStream.writeBytes(requestBody);
+        // outputStream.flush();
         // }
-        
+
         int responseCode = connection.getResponseCode();
-        
+
         if (responseCode == HttpURLConnection.HTTP_OK) {
             BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String inputLine;
             StringBuilder response = new StringBuilder();
-        
+
             while ((inputLine = in.readLine()) != null) {
                 response.append(inputLine);
             }
@@ -105,17 +187,14 @@ public class ClientHandler {
 
                 for (Map.Entry<Long, Mensagem> entry : recevedMessages.entrySet()) {
                     Mensagem mensagens = entry.getValue();
-                    System.out.println("["+ mensagens.getRemetente() +"]: " + mensagens.getContent());
-                   
+                    System.out.println("[" + mensagens.getRemetente() + "]: " + mensagens.getContent());
+
                 }
-                //System.out.println(recevedMessages);
+                // System.out.println(recevedMessages);
             }
 
-            
-        } 
+        }
     }
-
-
 
     public static String getUserName() {
         return userName;
@@ -133,7 +212,12 @@ public class ClientHandler {
         ClientHandler.userNameDestino = userNameDestino;
     }
 
-    
+    public static User getUserConected() {
+        return userConected;
+    }
+
+    public static void setUserConected(User userConected) {
+        ClientHandler.userConected = userConected;
+    }
 
 }
-

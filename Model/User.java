@@ -10,7 +10,8 @@ public class User implements Serializable {
     private String id;
     private String username;
     private String password;
-                       //TimeStamp //obj
+
+    // TimeStamp //obj
     private static TreeMap<Long, Mensagem> exchangedMenssages = new TreeMap<>();
 
     public User(String username, String password) {
@@ -29,6 +30,10 @@ public class User implements Serializable {
 
     public boolean checkPassword(String password) {
         return this.password.equals(password);
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     @Override

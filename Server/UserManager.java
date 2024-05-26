@@ -12,7 +12,6 @@ public class UserManager {
     private static final String FILE_NAME = "users.ser";
     private static UserManager instance;
 
-
     public UserManager() {
         loadUsers();
     }
@@ -33,12 +32,14 @@ public class UserManager {
         return true;
     }
 
-    public boolean authenticate(String username, String password) {
+    public User authenticate(String username, String password) {
         User user = users.get(username);
-        if (user == null) {
-            return false; // Usuário não encontrado
+
+        if (user != null && user.checkPassword(password)) {
+            return user;
         }
-        return user.checkPassword(password);
+
+        return null;
     }
 
     public void listUsers() {
@@ -46,6 +47,17 @@ public class UserManager {
         for (User user : users.values()) {
             System.out.println(user);
         }
+    }
+
+    public boolean changePassword(String username, String currentPassword, String newPassword) {
+        User user = users.get(username);
+
+        if (user != null && user.checkPassword(currentPassword)) {
+            user.setPassword(newPassword);
+            saveUsers();
+            return true;
+        }
+        return false;
     }
 
     @SuppressWarnings("unchecked")
