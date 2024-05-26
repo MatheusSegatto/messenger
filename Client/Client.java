@@ -18,7 +18,10 @@ public class Client {
         
         System.out.print("Qual o Username do destinatario: ");
         String userNameDestino = scanner.nextLine();
+
         ClientHandler.setUserNameDestino(userNameDestino);
+
+        
         
         ClientHandler.stablishConection();
 
