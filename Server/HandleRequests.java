@@ -24,11 +24,7 @@ public class HandleRequests {
     static public class SetClientOnServer implements HttpHandler {
         public void handle(HttpExchange exchange) throws IOException {
             if ("POST".equals(exchange.getRequestMethod())) {
-                // Lê os cabeçalhos da requisição
-                // exchange.getRequestHeaders().forEach((k, v) -> System.out.println("Header: "
-                // + k + " = " + String.join(", ", v)));
 
-                // Lê o corpo da requisição
                 InputStream requestBodyStream = exchange.getRequestBody();
                 String userNameConected = new String(requestBodyStream.readAllBytes(), StandardCharsets.UTF_8);
 
@@ -61,7 +57,7 @@ public class HandleRequests {
                     os.close();
                     return;
                 }
-
+                
                 String username = credentials[0];
                 String password = credentials[1];
 
@@ -143,6 +139,8 @@ public class HandleRequests {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
 
+            
+            //Mandar a lista de onlines para o client
             // verificar se tem alguma mensagem pendente
             Long timeStamp = System.currentTimeMillis();
             // Extrai o sessionID do cabeçalho da solicitação
@@ -150,23 +148,24 @@ public class HandleRequests {
 
             activeClients.put(userNameConected, timeStamp);
 
+            String response;
+
             // Verificar se tem alguma mensagem
             if (MessageManager.checkIfThereIsMessage(userNameConected)) {
                 TreeMap<Long, Mensagem> messagesReceved = MessageManager.getRecentMessages(userNameConected);
-                String response = dataTools.serializeTreeMapToString(messagesReceved);
+                response = dataTools.serializeTreeMapToString(messagesReceved);
                 exchange.sendResponseHeaders(200, response.getBytes().length);
-                OutputStream os = exchange.getResponseBody();
-                os.write(response.getBytes());
-                os.close();
-                return;
+                
+            }else {
+                // Envia uma resposta de sucesso para o cliente
+                response = "Nenhuma Mensagem Recebida!";
+                exchange.sendResponseHeaders(401, response.getBytes().length);
             }
-
-            // Envia uma resposta de sucesso para o cliente
-            String response = "false";
-            exchange.sendResponseHeaders(200, response.getBytes().length);
+            
             OutputStream os = exchange.getResponseBody();
             os.write(response.getBytes());
             os.close();
+
 
         }
     }
@@ -242,6 +241,37 @@ public class HandleRequests {
         // os.close();
         // }
     }
+    
+    
+    
+    static public class GetOnlineClients implements HttpHandler {
+        @Override
+        public void handle(HttpExchange exchange) throws IOException {
+            
+            System.err.println("entrou aqui");
+            System.out.println(activeClients);
+            
+            String response;
+            // Verificar se tem alguma mensagem
+            if (!activeClients.isEmpty()) {
+                String onlineClients = dataTools.objToString(activeClients);
+                response = onlineClients;
+                exchange.sendResponseHeaders(200, response.getBytes().length);
+                
+            }else {
+                // Envia uma resposta de sucesso para o cliente
+                response = "Nenhum Cliente Online!";
+                exchange.sendResponseHeaders(401, response.getBytes().length);
+            }
+            
+            OutputStream os = exchange.getResponseBody();
+            os.write(response.getBytes());
+            os.close();
+
+            
+        }
+    }
+
 
     public static void checkClientActivity() {
         new Thread(() -> {

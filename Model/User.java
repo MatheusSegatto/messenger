@@ -1,8 +1,7 @@
 package Model;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.TreeMap;
+
 import java.util.UUID;
 
 public class User implements Serializable {
@@ -12,7 +11,7 @@ public class User implements Serializable {
     private String password;
 
     // TimeStamp //obj
-    private static TreeMap<Long, Mensagem> exchangedMenssages = new TreeMap<>();
+    //private static TreeMap<Long, Mensagem> exchangedMenssages = new TreeMap<>();
 
     public User(String username, String password) {
         this.id = UUID.randomUUID().toString();

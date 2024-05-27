@@ -6,9 +6,11 @@ import java.io.IOException;
 
 import java.util.Scanner;
 
+import Util.commandPrompt;
+
 
 public class Client {
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException {
         Scanner scanner = new Scanner(System.in);
         
         
@@ -20,13 +22,15 @@ public class Client {
         String userNameDestino = scanner.nextLine();
 
         ClientHandler.setUserNameDestino(userNameDestino);
-
-        
         
         ClientHandler.stablishConection();
 
+        
+        System.out.println(ClientHandler.getListOfUsersConected());
+        
         MessageHandler.messageSide();
-    }
 
+
+    }
 }
  

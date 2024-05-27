@@ -1,13 +1,13 @@
 package Client;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -162,7 +162,6 @@ public class ClientHandler {
         // Define o userName no cabeçalho da solicitação
         connection.setRequestProperty("userName", userName);
 
-        String requestBody = userName;
 
         // Enviando para servidor
         // Escreve o corpo da requisição no fluxo de saída
@@ -184,19 +183,75 @@ public class ClientHandler {
             }
             in.close();
 
-            if (!(response.toString().equals("false"))) {
-                TreeMap<Long, Mensagem> recevedMessages = dataTools.deserializeStringToTreeMap(response.toString());
+            
+            TreeMap<Long, Mensagem> recevedMessages = dataTools.deserializeStringToTreeMap(response.toString());
 
-                for (Map.Entry<Long, Mensagem> entry : recevedMessages.entrySet()) {
-                    Mensagem mensagens = entry.getValue();
-                    System.out.println("[" + mensagens.getRemetente() + "]: " + mensagens.getContent());
+            for (Map.Entry<Long, Mensagem> entry : recevedMessages.entrySet()) {
+                Mensagem mensagens = entry.getValue();
+                System.out.println("[" + mensagens.getRemetente() + "]: " + mensagens.getContent());
 
-                }
-                // System.out.println(recevedMessages);
             }
-
+        }else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
+            //System.out.println("Não há nenhuma mensagem!");
+        } else {
+            System.out.println("Request failed with response code: " + responseCode);
         }
     }
+
+    public static String getListOfUsersConected() throws IOException,  ClassNotFoundException {
+        @SuppressWarnings("deprecation")
+        URL url = new URL("http://localhost:8000/getOnlineClients");
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+
+
+        // Define o userName no cabeçalho da solicitação
+
+        int responseCode = connection.getResponseCode();
+
+        if (responseCode == HttpURLConnection.HTTP_OK) {
+            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String inputLine;
+            StringBuilder response = new StringBuilder();
+
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+
+
+            StringBuilder onlineClientsList = new StringBuilder();
+            onlineClientsList.append("Online Clint List\n");
+            int counter = 1;
+            
+            @SuppressWarnings("unchecked")
+            HashMap<String, Long> onlineClientes = (HashMap<String, Long>) dataTools.stringToObj(response.toString());
+
+            for (Map.Entry<String, Long> entry : onlineClientes.entrySet()) {
+                String keys = entry.getKey();
+                if (keys.equals(userName)){
+
+                    continue;
+                }
+                onlineClientsList.append(counter + " - " + keys + "\n");
+
+                counter = counter + 1;
+            }
+
+            if (counter == 1){
+                return "There is no Online Client!";
+            }else{
+                return onlineClientsList.toString();
+            }
+
+        }else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
+            
+            return "There is no Online Client!";
+        } 
+        return "Request failed with response code: " + responseCode;
+    }
+
+
 
     public static String getUserName() {
         return userName;
