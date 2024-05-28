@@ -181,6 +181,15 @@ public class HandleRequests {
 
                 try {
                     Mensagem newMessage = (Mensagem) dataTools.stringToObj(requestBody);
+                    if (activeClients.containsKey(newMessage.getDestinatario())){
+                        String response = "[SERVER] Message wasn´t delivered because this client is not online anymore!";
+                        exchange.sendResponseHeaders(401, response.getBytes().length);
+                        OutputStream os = exchange.getResponseBody();
+                        os.write(response.getBytes());
+                        os.close();
+                        return;
+
+                    }
                     System.out.println("newMessage: " + newMessage.getContent() + " " + newMessage.getDestinatario()
                             + " " + newMessage.getRemetente());
                     MessageManager.addNewMessage(newMessage);

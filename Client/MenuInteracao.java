@@ -37,7 +37,7 @@ public class MenuInteracao {
     }
 
     public static void menuLogin() throws ClassNotFoundException, InterruptedException {
-        // commandPrompt.clearPrompt();
+        commandPrompt.clearPrompt();
         System.out.print("============================================\n");
         System.out.print("                     LOGIN                  \n");
         System.out.print("============================================\n");
@@ -62,6 +62,7 @@ public class MenuInteracao {
             passWord = scanner.nextLine();
         }
         System.out.println("Login successful.");
+        commandPrompt.WaitForInteraction(scanner);
         menuClient();
     }
 
