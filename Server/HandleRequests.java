@@ -181,25 +181,25 @@ public class HandleRequests {
 
                 try {
                     Mensagem newMessage = (Mensagem) dataTools.stringToObj(requestBody);
-                    if (activeClients.containsKey(newMessage.getDestinatario())){
-                        String response = "[SERVER] Message wasn´t delivered because this client is not online anymore!";
+                    System.out.println(activeClients);
+                    if (!activeClients.containsKey(newMessage.getDestinatario())){
+                        String response = "[SERVER DENIED]";
                         exchange.sendResponseHeaders(401, response.getBytes().length);
                         OutputStream os = exchange.getResponseBody();
                         os.write(response.getBytes());
                         os.close();
                         return;
-
                     }
                     System.out.println("newMessage: " + newMessage.getContent() + " " + newMessage.getDestinatario()
                             + " " + newMessage.getRemetente());
                     MessageManager.addNewMessage(newMessage);
 
                 } catch (ClassNotFoundException | IOException e) {
-                    System.out.println("[SERVER]: Message Error!");
+                    System.out.println("[SERVER ERROR]: Message Error!");
                 }
 
                 // Envia uma resposta de sucesso para o cliente
-                String response = "[SERVER] Message Receved!";
+                String response = "[SERVER SUCCESS]: Message Receved!";
                 exchange.sendResponseHeaders(200, response.getBytes().length);
                 OutputStream os = exchange.getResponseBody();
                 os.write(response.getBytes());
@@ -252,7 +252,6 @@ public class HandleRequests {
     }
     
     
-    
     static public class GetOnlineClients implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
@@ -286,7 +285,7 @@ public class HandleRequests {
         new Thread(() -> {
             while (true) {
                 long currentTime = System.currentTimeMillis();
-                // System.out.println(activeClients);
+                System.out.println(activeClients);
 
                 List<String> tempRemoveArray = new ArrayList<>();
                 try {

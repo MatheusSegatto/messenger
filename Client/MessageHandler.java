@@ -27,7 +27,6 @@ public class MessageHandler {
         } while (!message.equals("--EXIT--"));
 
         scanner.close();
-        System.out.println("Client stopped."); 
     }
     
     private static void sendMessage(String message, String destinatario) throws IOException, InterruptedException {
@@ -69,8 +68,11 @@ public class MessageHandler {
 
 
             System.out.println("Response from Server: " + response.toString());
+        } else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
+            System.out.println("[SERVER DENIED]: Message wasn´t delivered because this client is not online!");
+        } else {
+            System.out.println("Request failed with response code: " + responseCode);
         }  
-            
     }
 
 }

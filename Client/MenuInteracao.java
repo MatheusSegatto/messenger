@@ -14,6 +14,7 @@ public class MenuInteracao {
         int opt = -1;
 
         while (opt != 3) {
+            commandPrompt.clearPrompt();
             menuInicial();
             opt = scanner.nextInt();
             scanner.nextLine(); // Consumir a nova linha
@@ -26,7 +27,8 @@ public class MenuInteracao {
                     menuCreateAccount();
                     break;
                 case 3:
-                    System.out.println("Exiting...");
+                    System.out.println("Encerrando o programa.");
+                    System.exit(0); 
                     return;
                 default:
                     System.out.println("Invalid choice. Please try again.");
@@ -78,7 +80,7 @@ public class MenuInteracao {
     }
 
     public static void menuCreateAccount() {
-        // commandPrompt.clearPrompt();
+        commandPrompt.clearPrompt();
         System.out.print("============================================\n");
         System.out.print("              CREATE AN ACCOUNT             \n");
         System.out.print("============================================\n");
@@ -123,49 +125,60 @@ public class MenuInteracao {
         commandPrompt.clearPrompt();
 
         ClientHandler.stablishConection();
-        System.out.print("============================================\n");
-        System.out.print(" CLIENT MENU \n");
-        System.out.print("============================================\n");
-        System.out.print("[1] - Enviar Mensagem Para um Usuário;\n");
-        System.out.print("[2] - Enviar Mensagem para Todos os Usuários;\n");
-        System.out.print("[3] - Verificar Usuários Online;\n");
-        System.out.print("[4] - Alterar Senha da Conta;\n");
-        System.out.print("[5] - Ver Histórico de Mensagem;\n");
-        System.out.print("[6] - Sair;\n");
-        System.out.print("Digite a opção desejada:\n");
+        int opt = -1;
 
-        int opt = scanner.nextInt();
-        scanner.nextLine(); // Consumir a nova linha
+        while(opt != 6){
+            System.out.print("============================================\n");
+            System.out.print(" CLIENT MENU \n");
+            System.out.print("============================================\n");
+            System.out.print("[1] - Enviar Mensagem Para um Usuário;\n");
+            System.out.print("[2] - Enviar Mensagem para Todos os Usuários;\n");
+            System.out.print("[3] - Verificar Usuários Online;\n");
+            System.out.print("[4] - Alterar Senha da Conta;\n");
+            System.out.print("[5] - Ver Histórico de Mensagem;\n");
+            System.out.print("[6] - Sair;\n");
+            System.out.print("Digite a opção desejada:\n");
 
-        switch (opt) {
-            case 1:
-            //historico de mensagem
-            //
-            // sendMessageToUser();
-                sendMessageToUser();
-                break;
-            case 2:
-            // sendMessageToAll();
-            // break;
-            // case 3:
-            // checkOnlineUsers();
-            // break;
-            case 4:
-                menuChangePassword();
-                break;
-            // case 5:
-            // viewMessageHistory();
-            // break;
-            case 6:
-                System.out.println("Exiting...");
-                break;
-            default:
-                System.out.println("Invalid choice. Please try again.");
+            opt = scanner.nextInt();
+            scanner.nextLine(); // Consumir a nova linha
+
+            switch (opt) {
+                case 1:
+                //historico de mensagem
+                //
+                // sendMessageToUser();
+                    sendMessageToUser();
+                    break;
+                case 2:
+                // sendMessageToAll();
+                // break;
+                // case 3:
+                // checkOnlineUsers();
+                    break;
+                case 4:
+                    menuChangePassword();
+                    break;
+                    // case 5:
+                    // viewMessageHistory();
+                    // break;
+                case 5:
+                    //ver historico de mensagem
+                    break;
+                case 6:
+                    System.out.println("Exiting...");
+                    ClientHandler.logOutUser();
+                    commandPrompt.WaitForInteraction(scanner);
+                    return;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
         }
+        
 
     }
 
     public static void sendMessageToUser() throws ClassNotFoundException, IOException, InterruptedException {
+        commandPrompt.clearPrompt();
         System.out.println(ClientHandler.getListOfUsersConected());
         System.out.println("Write the username of the person that you want to chat:");
         String destinatario = scanner.nextLine();

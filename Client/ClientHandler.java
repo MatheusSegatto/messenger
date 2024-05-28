@@ -88,7 +88,7 @@ public class ClientHandler {
                 User newUser = (User) dataTools.stringToObj(requestBody);
                 setUserConected(newUser);
 
-                System.out.println("User: " + newUser.getUsername() + " logged in successfully");
+                //System.out.println("User: " + newUser.getUsername() + " logged in successfully");
 
                 return true;
 
@@ -140,7 +140,7 @@ public class ClientHandler {
         }
 
         new Thread(() -> {
-            while (true) {
+            while (userConected != null) {
                 try {
                     pingServer();
                     Thread.sleep(5000);
@@ -160,15 +160,6 @@ public class ClientHandler {
 
         // Define o userName no cabeçalho da solicitação
         connection.setRequestProperty("userName", userConected.getUsername());
-
-
-        // Enviando para servidor
-        // Escreve o corpo da requisição no fluxo de saída
-        // try (DataOutputStream outputStream = new
-        // DataOutputStream(connection.getOutputStream())) {
-        // outputStream.writeBytes(requestBody);
-        // outputStream.flush();
-        // }
 
         int responseCode = connection.getResponseCode();
 
@@ -265,6 +256,10 @@ public class ClientHandler {
 
     public static String getConectedUsername(){
         return userConected.getUsername();
+    }
+
+    public static void logOutUser(){
+        userConected = null;
     }
 
 }
