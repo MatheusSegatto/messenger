@@ -20,8 +20,7 @@ import Model.User;
 public class ClientHandler {
     private static User userConected;
 
-    private static String userName;
-    private static String userNameDestino;
+    
 
     public static boolean changePassword(String currentPassword, String newPassword) {
         try {
@@ -32,7 +31,7 @@ public class ClientHandler {
             connection.setRequestMethod("POST");
             connection.setDoOutput(true);
 
-            String credentials = userName + "," + currentPassword + "," + newPassword;
+            String credentials = userConected.getUsername() + "," + currentPassword + "," + newPassword;
 
             System.out.println(credentials);
 
@@ -117,7 +116,7 @@ public class ClientHandler {
         connection.setRequestProperty("Accept", "application/json");
 
         try (OutputStream os = connection.getOutputStream()) {
-            byte[] input = userName.getBytes(StandardCharsets.UTF_8);
+            byte[] input = userConected.getUsername().getBytes(StandardCharsets.UTF_8);
             os.write(input, 0, input.length);
         }
 
@@ -160,7 +159,7 @@ public class ClientHandler {
         connection.setRequestMethod("GET");
 
         // Define o userName no cabeçalho da solicitação
-        connection.setRequestProperty("userName", userName);
+        connection.setRequestProperty("userName", userConected.getUsername());
 
 
         // Enviando para servidor
@@ -229,7 +228,7 @@ public class ClientHandler {
 
             for (Map.Entry<String, Long> entry : onlineClientes.entrySet()) {
                 String keys = entry.getKey();
-                if (keys.equals(userName)){
+                if (keys.equals(userConected.getUsername())){
 
                     continue;
                 }
@@ -253,29 +252,19 @@ public class ClientHandler {
 
 
 
-    public static String getUserName() {
-        return userName;
-    }
-
-    public static void setUserName(String username) {
-        ClientHandler.userName = username;
-    }
-
-    public static String getUserNameDestino() {
-        return userNameDestino;
-    }
-
-    public static void setUserNameDestino(String userNameDestino) {
-        ClientHandler.userNameDestino = userNameDestino;
-    }
+  
 
     public static User getUserConected() {
         return userConected;
     }
 
-    public static void setUserConected(User userConected) {
-        ClientHandler.userName = userConected.getUsername();
-        ClientHandler.userConected = userConected;
+    public static void setUserConected(User user) {
+        userConected = user;
+        
+    }
+
+    public static String getConectedUsername(){
+        return userConected.getUsername();
     }
 
 }

@@ -10,7 +10,7 @@ public class MenuInteracao {
     private static UserManager userManager = new UserManager();
     private static Scanner scanner = new Scanner(System.in);
 
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException {
         int opt = -1;
 
         while (opt != 3) {
@@ -27,7 +27,7 @@ public class MenuInteracao {
                     break;
                 case 3:
                     System.out.println("Exiting...");
-                    break;
+                    return;
                 default:
                     System.out.println("Invalid choice. Please try again.");
             }
@@ -36,7 +36,7 @@ public class MenuInteracao {
         scanner.close();
     }
 
-    public static void menuLogin() {
+    public static void menuLogin() throws ClassNotFoundException, InterruptedException {
         // commandPrompt.clearPrompt();
         System.out.print("============================================\n");
         System.out.print("                     LOGIN                  \n");
@@ -53,7 +53,7 @@ public class MenuInteracao {
         }
     }
 
-    private static void authenticateUser(String userName, String passWord) throws IOException {
+    private static void authenticateUser(String userName, String passWord) throws IOException, ClassNotFoundException, InterruptedException {
         while (!ClientHandler.authenticate(userName, passWord)) {
             System.out.println("Invalid credentials. Please try again.");
             System.out.println("- USERNAME: ");
@@ -96,7 +96,7 @@ public class MenuInteracao {
         while (!passWordCreate.equals(confirmPassWordCreate)) {
             // commandPrompt.clearPrompt();
             System.out.println("\n\n[ATTENTION]: The passwords are not the same!\n\n");
-            commandPrompt.WaitForInteraction();
+            commandPrompt.WaitForInteraction(scanner);
             System.out.println("- PASSWORD:");
             passWordCreate = scanner.nextLine();
             System.out.println("- CONFIRM PASSWORD:");
@@ -105,7 +105,7 @@ public class MenuInteracao {
 
         while (!userManager.addUser(userNameCreate, passWordCreate)) {
             System.out.println("\n\n[ATTENTION]: User already exists!\n\n");
-            commandPrompt.WaitForInteraction();
+            commandPrompt.WaitForInteraction(scanner);
             System.out.println("- USERNAME: ");
             userNameCreate = scanner.nextLine();
             System.out.println("- PASSWORD:");
@@ -115,10 +115,13 @@ public class MenuInteracao {
         }
 
         System.out.println("Account created successfully.");
+        commandPrompt.WaitForInteraction(scanner);
     }
 
-    public static void menuClient() {
-        // commandPrompt.clearPrompt();
+    public static void menuClient() throws IOException, ClassNotFoundException, InterruptedException {
+        commandPrompt.clearPrompt();
+
+        ClientHandler.stablishConection();
         System.out.print("============================================\n");
         System.out.print(" CLIENT MENU \n");
         System.out.print("============================================\n");
@@ -134,10 +137,13 @@ public class MenuInteracao {
         scanner.nextLine(); // Consumir a nova linha
 
         switch (opt) {
-            // case 1:
+            case 1:
+            //historico de mensagem
+            //
             // sendMessageToUser();
-            // break;
-            // case 2:
+                sendMessageToUser();
+                break;
+            case 2:
             // sendMessageToAll();
             // break;
             // case 3:
@@ -156,6 +162,27 @@ public class MenuInteracao {
                 System.out.println("Invalid choice. Please try again.");
         }
 
+    }
+
+    public static void sendMessageToUser() throws ClassNotFoundException, IOException, InterruptedException {
+        System.out.println(ClientHandler.getListOfUsersConected());
+        System.out.println("Write the username of the person that you want to chat:");
+        String destinatario = scanner.nextLine();
+        MessageHandler.chatMessage(destinatario);
+    }
+
+    public static void menuChangePassword() {
+        System.out.println("============================================");
+        System.out.println("CHANGE PASSWORD");
+        System.out.println("============================================");
+        System.out.println("Enter your current password:");
+        String currentPassword = scanner.nextLine();
+        System.out.println("Enter your new password:");
+        String newPassword = scanner.nextLine();
+        System.out.println("Confirm your new password:");
+        String confirmNewPassword = scanner.nextLine();
+
+        changePassword(currentPassword, newPassword, confirmNewPassword);
     }
 
     private static boolean changePassword(String currentPassword, String newPassword, String confirmNewPassword) {
@@ -177,17 +204,5 @@ public class MenuInteracao {
 
     }
 
-    public static void menuChangePassword() {
-        System.out.println("============================================");
-        System.out.println("CHANGE PASSWORD");
-        System.out.println("============================================");
-        System.out.println("Enter your current password:");
-        String currentPassword = scanner.nextLine();
-        System.out.println("Enter your new password:");
-        String newPassword = scanner.nextLine();
-        System.out.println("Confirm your new password:");
-        String confirmNewPassword = scanner.nextLine();
 
-        changePassword(currentPassword, newPassword, confirmNewPassword);
-    }
 }

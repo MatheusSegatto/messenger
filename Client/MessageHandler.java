@@ -13,15 +13,16 @@ import Util.dataTools;
 
 public class MessageHandler {
     //Criando o chatzin de teste
-    public static void messageSide() throws IOException, InterruptedException{
+    public static void chatMessage(String userNameDestinatario) throws IOException, InterruptedException{
         Scanner scanner = new Scanner(System.in);
+        String destinatario = userNameDestinatario;
         String message;
         
         do {
             System.out.print("Enter a message (type '--EXIT--' to quit): ");
             message = scanner.nextLine();
             if (!message.equals("--EXIT--")) {
-                sendMessage(message);
+                sendMessage(message, destinatario);
             }
         } while (!message.equals("--EXIT--"));
 
@@ -29,7 +30,7 @@ public class MessageHandler {
         System.out.println("Client stopped."); 
     }
     
-    private static void sendMessage(String message) throws IOException, InterruptedException {
+    private static void sendMessage(String message, String destinatario) throws IOException, InterruptedException {
         @SuppressWarnings("deprecation")
         URL url = new URL("http://localhost:8000/sendMessage");
 
@@ -40,7 +41,7 @@ public class MessageHandler {
         postConnection.setRequestProperty("Content-Type", "application/json; utf-8");
 
         //Criando o objeto mensagem
-        Mensagem newMensage = new Mensagem(ClientHandler.getUserName(), ClientHandler.getUserNameDestino(), message);
+        Mensagem newMensage = new Mensagem(ClientHandler.getConectedUsername(), destinatario, message);
 
         // O que falta nessa fun
 

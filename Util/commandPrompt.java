@@ -21,8 +21,8 @@ public class commandPrompt {
 
     }
 
-    public static void WaitForInteraction() {
-        Scanner scanner = new Scanner(System.in);
+    public static void WaitForInteraction(Scanner scanner) {
+        
 
         System.out.println("Press ENTER to continue...");
 
