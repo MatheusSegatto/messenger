@@ -57,7 +57,7 @@ public class HandleRequests {
                     os.close();
                     return;
                 }
-                
+
                 String username = credentials[0];
                 String password = credentials[1];
 
@@ -135,12 +135,58 @@ public class HandleRequests {
         }
     }
 
+    static public class CreateAccount implements HttpHandler {
+        @Override
+        public void handle(HttpExchange exchange) throws IOException {
+            if ("POST".equals(exchange.getRequestMethod())) {
+                InputStream requestBodyStream = exchange.getRequestBody();
+                String body = new String(requestBodyStream.readAllBytes(), StandardCharsets.UTF_8);
+
+                // username, password e email separados por uma vírgula
+                String[] credentials = body.split(",");
+                if (credentials.length != 2) {
+                    String response = "Invalid request format";
+                    exchange.sendResponseHeaders(400, response.getBytes().length);
+                    OutputStream os = exchange.getResponseBody();
+                    os.write(response.getBytes());
+                    os.close();
+                    return;
+                }
+
+                String username = credentials[0];
+                String password = credentials[1];
+
+                System.out.println("Username: " + username + " Password: " + password);
+
+                UserManager userManager = UserManager.getInstance();
+                boolean accountCreated = userManager.addUser(username, password);
+
+                // print de debug
+                System.out.println("Account created: " + accountCreated);
+                String response;
+
+                if (accountCreated) {
+                    response = "Account created successfully";
+                    exchange.sendResponseHeaders(200, response.getBytes().length);
+                } else {
+                    response = "Account creation failed";
+                    exchange.sendResponseHeaders(401, response.getBytes().length);
+                }
+
+                OutputStream os = exchange.getResponseBody();
+                os.write(response.getBytes());
+                os.close();
+            } else {
+                exchange.sendResponseHeaders(405, -1); // 405 Method Not Allowed
+            }
+        }
+    }
+
     static public class PingHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
 
-            
-            //Mandar a lista de onlines para o client
+            // Mandar a lista de onlines para o client
             // verificar se tem alguma mensagem pendente
             Long timeStamp = System.currentTimeMillis();
             // Extrai o sessionID do cabeçalho da solicitação
@@ -155,17 +201,16 @@ public class HandleRequests {
                 TreeMap<Long, Mensagem> messagesReceved = MessageManager.getRecentMessages(userNameConected);
                 response = dataTools.serializeTreeMapToString(messagesReceved);
                 exchange.sendResponseHeaders(200, response.getBytes().length);
-                
-            }else {
+
+            } else {
                 // Envia uma resposta de sucesso para o cliente
                 response = "Nenhuma Mensagem Recebida!";
                 exchange.sendResponseHeaders(401, response.getBytes().length);
             }
-            
+
             OutputStream os = exchange.getResponseBody();
             os.write(response.getBytes());
             os.close();
-
 
         }
     }
@@ -182,7 +227,7 @@ public class HandleRequests {
                 try {
                     Mensagem newMessage = (Mensagem) dataTools.stringToObj(requestBody);
                     System.out.println(activeClients);
-                    if (!activeClients.containsKey(newMessage.getDestinatario())){
+                    if (!activeClients.containsKey(newMessage.getDestinatario())) {
                         String response = "[SERVER DENIED]";
                         exchange.sendResponseHeaders(401, response.getBytes().length);
                         OutputStream os = exchange.getResponseBody();
@@ -250,36 +295,33 @@ public class HandleRequests {
         // os.close();
         // }
     }
-    
-    
+
     static public class GetOnlineClients implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
-            
+
             System.err.println("entrou aqui");
             System.out.println(activeClients);
-            
+
             String response;
             // Verificar se tem alguma mensagem
             if (!activeClients.isEmpty()) {
                 String onlineClients = dataTools.objToString(activeClients);
                 response = onlineClients;
                 exchange.sendResponseHeaders(200, response.getBytes().length);
-                
-            }else {
+
+            } else {
                 // Envia uma resposta de sucesso para o cliente
                 response = "Nenhum Cliente Online!";
                 exchange.sendResponseHeaders(401, response.getBytes().length);
             }
-            
+
             OutputStream os = exchange.getResponseBody();
             os.write(response.getBytes());
             os.close();
 
-            
         }
     }
-
 
     public static void checkClientActivity() {
         new Thread(() -> {

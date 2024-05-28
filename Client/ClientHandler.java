@@ -20,7 +20,36 @@ import Model.User;
 public class ClientHandler {
     private static User userConected;
 
-    
+    public static boolean createAccount(String username, String password) {
+        try {
+            @SuppressWarnings("deprecation")
+            URL url = new URL("http://localhost:8000/createAccount"); // URL do servidor
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+            connection.setRequestMethod("POST");
+            connection.setDoOutput(true);
+
+            String credentials = username + "," + password;
+
+            byte[] outputBytes = credentials.getBytes(StandardCharsets.UTF_8);
+            OutputStream os = connection.getOutputStream();
+            os.write(outputBytes);
+            os.close();
+
+            int responseCode = connection.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                System.out.println("Account created successfully");
+                return true;
+            } else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
+                System.out.println("Account creation failed");
+            } else {
+                System.out.println("Request failed with response code: " + responseCode);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 
     public static boolean changePassword(String currentPassword, String newPassword) {
         try {
@@ -88,7 +117,8 @@ public class ClientHandler {
                 User newUser = (User) dataTools.stringToObj(requestBody);
                 setUserConected(newUser);
 
-                //System.out.println("User: " + newUser.getUsername() + " logged in successfully");
+                // System.out.println("User: " + newUser.getUsername() + " logged in
+                // successfully");
 
                 return true;
 
@@ -173,7 +203,6 @@ public class ClientHandler {
             }
             in.close();
 
-            
             TreeMap<Long, Mensagem> recevedMessages = dataTools.deserializeStringToTreeMap(response.toString());
 
             for (Map.Entry<Long, Mensagem> entry : recevedMessages.entrySet()) {
@@ -181,19 +210,18 @@ public class ClientHandler {
                 System.out.println("[" + mensagens.getRemetente() + "]: " + mensagens.getContent());
 
             }
-        }else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
-            //System.out.println("Não há nenhuma mensagem!");
+        } else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
+            // System.out.println("Não há nenhuma mensagem!");
         } else {
             System.out.println("Request failed with response code: " + responseCode);
         }
     }
 
-    public static String getListOfUsersConected() throws IOException,  ClassNotFoundException {
+    public static String getListOfUsersConected() throws IOException, ClassNotFoundException {
         @SuppressWarnings("deprecation")
         URL url = new URL("http://localhost:8000/getOnlineClients");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
-
 
         // Define o userName no cabeçalho da solicitação
 
@@ -209,17 +237,16 @@ public class ClientHandler {
             }
             in.close();
 
-
             StringBuilder onlineClientsList = new StringBuilder();
             onlineClientsList.append("Online Clint List\n");
             int counter = 1;
-            
+
             @SuppressWarnings("unchecked")
             HashMap<String, Long> onlineClientes = (HashMap<String, Long>) dataTools.stringToObj(response.toString());
 
             for (Map.Entry<String, Long> entry : onlineClientes.entrySet()) {
                 String keys = entry.getKey();
-                if (keys.equals(userConected.getUsername())){
+                if (keys.equals(userConected.getUsername())) {
 
                     continue;
                 }
@@ -228,22 +255,18 @@ public class ClientHandler {
                 counter = counter + 1;
             }
 
-            if (counter == 1){
+            if (counter == 1) {
                 return "There is no Online Client!";
-            }else{
+            } else {
                 return onlineClientsList.toString();
             }
 
-        }else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
-            
+        } else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
+
             return "There is no Online Client!";
-        } 
+        }
         return "Request failed with response code: " + responseCode;
     }
-
-
-
-  
 
     public static User getUserConected() {
         return userConected;
@@ -251,14 +274,14 @@ public class ClientHandler {
 
     public static void setUserConected(User user) {
         userConected = user;
-        
+
     }
 
-    public static String getConectedUsername(){
+    public static String getConectedUsername() {
         return userConected.getUsername();
     }
 
-    public static void logOutUser(){
+    public static void logOutUser() {
         userConected = null;
     }
 

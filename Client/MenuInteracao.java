@@ -28,7 +28,7 @@ public class MenuInteracao {
                     break;
                 case 3:
                     System.out.println("Encerrando o programa.");
-                    System.exit(0); 
+                    System.exit(0);
                     return;
                 default:
                     System.out.println("Invalid choice. Please try again.");
@@ -55,7 +55,8 @@ public class MenuInteracao {
         }
     }
 
-    private static void authenticateUser(String userName, String passWord) throws IOException, ClassNotFoundException, InterruptedException {
+    private static void authenticateUser(String userName, String passWord)
+            throws IOException, ClassNotFoundException, InterruptedException {
         while (!ClientHandler.authenticate(userName, passWord)) {
             System.out.println("Invalid credentials. Please try again.");
             System.out.println("- USERNAME: ");
@@ -106,7 +107,7 @@ public class MenuInteracao {
             confirmPassWordCreate = scanner.nextLine();
         }
 
-        while (!userManager.addUser(userNameCreate, passWordCreate)) {
+        while (!ClientHandler.createAccount(userNameCreate, passWordCreate)) {
             System.out.println("\n\n[ATTENTION]: User already exists!\n\n");
             commandPrompt.WaitForInteraction(scanner);
             System.out.println("- USERNAME: ");
@@ -127,7 +128,7 @@ public class MenuInteracao {
         ClientHandler.stablishConection();
         int opt = -1;
 
-        while(opt != 6){
+        while (opt != 6) {
             System.out.print("============================================\n");
             System.out.print(" CLIENT MENU \n");
             System.out.print("============================================\n");
@@ -144,25 +145,25 @@ public class MenuInteracao {
 
             switch (opt) {
                 case 1:
-                //historico de mensagem
-                //
-                // sendMessageToUser();
+                    // historico de mensagem
+                    //
+                    // sendMessageToUser();
                     sendMessageToUser();
                     break;
                 case 2:
-                // sendMessageToAll();
-                // break;
-                // case 3:
-                // checkOnlineUsers();
+                    // sendMessageToAll();
+                    // break;
+                    // case 3:
+                    // checkOnlineUsers();
                     break;
                 case 4:
                     menuChangePassword();
                     break;
-                    // case 5:
-                    // viewMessageHistory();
-                    // break;
+                // case 5:
+                // viewMessageHistory();
+                // break;
                 case 5:
-                    //ver historico de mensagem
+                    // ver historico de mensagem
                     break;
                 case 6:
                     System.out.println("Exiting...");
@@ -173,7 +174,6 @@ public class MenuInteracao {
                     System.out.println("Invalid choice. Please try again.");
             }
         }
-        
 
     }
 
@@ -217,6 +217,5 @@ public class MenuInteracao {
         }
 
     }
-
 
 }

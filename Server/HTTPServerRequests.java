@@ -15,6 +15,7 @@ public class HTTPServerRequests {
         server.createContext("/sendMessage", new HandleRequests.MessageReceiver());
         server.createContext("/authenticate", new HandleRequests.AuthenticateUser());
         server.createContext("/changePassword", new HandleRequests.ChangePassword());
+        server.createContext("/createAccount", new HandleRequests.CreateAccount());
         server.setExecutor(null);
         server.start();
         HandleRequests.checkClientActivity();
