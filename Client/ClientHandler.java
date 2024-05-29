@@ -38,7 +38,7 @@ public class ClientHandler {
 
             int responseCode = connection.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) {
-                System.out.println("Account created successfully");
+                System.out.println("Account created successfully!");
                 return true;
             } else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
                 System.out.println("Account creation failed");
@@ -162,6 +162,19 @@ public class ClientHandler {
                 }
                 in.close();
                 System.out.println("Conection established with the server side!: " + response.toString());
+                new Thread(() -> {
+                    while (userConected != null) {
+                        try {
+                            pingServer();
+                            Thread.sleep(5000);
+                        } catch (IOException | InterruptedException e) {
+        
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
+            }else if(responseCode == HttpURLConnection.HTTP_UNAUTHORIZED){
+                System.out.println("Esse login já esta em uso no momento!");
             }
 
         } catch (Exception e) {
@@ -169,17 +182,7 @@ public class ClientHandler {
             System.exit(0);
         }
 
-        new Thread(() -> {
-            while (userConected != null) {
-                try {
-                    pingServer();
-                    Thread.sleep(5000);
-                } catch (IOException | InterruptedException e) {
-
-                    e.printStackTrace();
-                }
-            }
-        }).start();
+        
     }
 
     private static void pingServer() throws IOException {

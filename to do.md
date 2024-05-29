@@ -5,5 +5,7 @@
 4) Mandar a nova mensagem para o destinatario (OK)
 5) Manipular essas mensagens, tanto no remetente quanto no destinatario parea salvamento no arquivo
 6) Criar um GET de quem ta Online naquele momento
+7) Fazer uma verificacao no stablish cliente, para nao deixar dois usuarios se conectar ao mesmo tempo
+
 
 

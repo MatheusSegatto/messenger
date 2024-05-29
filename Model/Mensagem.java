@@ -15,6 +15,11 @@ public class Mensagem implements Serializable {
 
     }
 
+    public Mensagem(String remetente, String content) {
+        this.remetente = remetente;
+        this.content = content;
+    }
+
     public Mensagem(String remetente, String destinatario, String content) {
         this.remetente = remetente;
         this.destinatario = destinatario;

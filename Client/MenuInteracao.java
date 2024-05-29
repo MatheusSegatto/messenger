@@ -3,11 +3,9 @@ package Client;
 import java.io.IOException;
 import java.util.Scanner;
 
-import Server.UserManager;
 import Util.commandPrompt;
 
 public class MenuInteracao {
-    private static UserManager userManager = new UserManager();
     private static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException {
@@ -118,7 +116,6 @@ public class MenuInteracao {
             confirmPassWordCreate = scanner.nextLine();
         }
 
-        System.out.println("Account created successfully.");
         commandPrompt.WaitForInteraction(scanner);
     }
 
@@ -151,11 +148,10 @@ public class MenuInteracao {
                     sendMessageToUser();
                     break;
                 case 2:
-                    // sendMessageToAll();
-                    // break;
+                    sendMessageToAll();
+                    break;
                     // case 3:
                     // checkOnlineUsers();
-                    break;
                 case 4:
                     menuChangePassword();
                     break;
@@ -182,7 +178,13 @@ public class MenuInteracao {
         System.out.println(ClientHandler.getListOfUsersConected());
         System.out.println("Write the username of the person that you want to chat:");
         String destinatario = scanner.nextLine();
-        MessageHandler.chatMessage(destinatario);
+        MessageHandler.chatMessage(destinatario, 1);
+    }
+
+    public static void sendMessageToAll() throws ClassNotFoundException, IOException, InterruptedException {
+        commandPrompt.clearPrompt();
+       
+        MessageHandler.chatMessage("", 2);
     }
 
     public static void menuChangePassword() {

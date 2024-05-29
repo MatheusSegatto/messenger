@@ -13,7 +13,8 @@ import Util.dataTools;
 
 public class MessageHandler {
     //Criando o chatzin de teste
-    public static void chatMessage(String userNameDestinatario) throws IOException, InterruptedException{
+    
+    public static void chatMessage(String userNameDestinatario, int option) throws IOException, InterruptedException{
         Scanner scanner = new Scanner(System.in);
         String destinatario = userNameDestinatario;
         String message;
@@ -22,22 +23,29 @@ public class MessageHandler {
             System.out.print("Enter a message (type '--EXIT--' to quit): ");
             message = scanner.nextLine();
             if (!message.equals("--EXIT--")) {
-                sendMessage(message, destinatario);
+                if (option == 1) {
+                    sendMessage(message, destinatario, "sendMessage");
+
+                }else if(option == 2){
+                    sendMessage(message, destinatario, "sendMessageToALL");
+                }
             }
         } while (!message.equals("--EXIT--"));
 
         scanner.close();
     }
-    
-    private static void sendMessage(String message, String destinatario) throws IOException, InterruptedException {
+
+
+    private static void sendMessage(String message, String destinatario, String type) throws IOException, InterruptedException {
         @SuppressWarnings("deprecation")
-        URL url = new URL("http://localhost:8000/sendMessage");
+        URL url = new URL("http://localhost:8000/" + type);
 
         HttpURLConnection postConnection = (HttpURLConnection) url.openConnection();
         
         postConnection.setRequestMethod("POST");
         postConnection.setDoOutput(true);
         postConnection.setRequestProperty("Content-Type", "application/json; utf-8");
+        
 
         //Criando o objeto mensagem
         Mensagem newMensage = new Mensagem(ClientHandler.getConectedUsername(), destinatario, message);

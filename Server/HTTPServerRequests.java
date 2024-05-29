@@ -13,6 +13,7 @@ public class HTTPServerRequests {
         server.createContext("/getOnlineClients", new HandleRequests.GetOnlineClients());
         server.createContext("/ping", new HandleRequests.PingHandler());
         server.createContext("/sendMessage", new HandleRequests.MessageReceiver());
+        server.createContext("/sendMessageToALL", new HandleRequests.MessageReceiverToALL());
         server.createContext("/authenticate", new HandleRequests.AuthenticateUser());
         server.createContext("/changePassword", new HandleRequests.ChangePassword());
         server.createContext("/createAccount", new HandleRequests.CreateAccount());

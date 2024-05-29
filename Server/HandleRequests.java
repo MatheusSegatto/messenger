@@ -28,11 +28,16 @@ public class HandleRequests {
                 InputStream requestBodyStream = exchange.getRequestBody();
                 String userNameConected = new String(requestBodyStream.readAllBytes(), StandardCharsets.UTF_8);
 
+                String response = "[SERVER] Client Conected Successfully!";
+                if (activeClients.containsKey(userNameConected)){
+                    exchange.sendResponseHeaders(401, response.getBytes().length);
+                }else{
+                    exchange.sendResponseHeaders(200, response.getBytes().length);
+                }
+
                 Long timeStamp = System.currentTimeMillis();
                 activeClients.put(userNameConected, timeStamp);
 
-                String response = "[SERVER] Client Conected Successfully!";
-                exchange.sendResponseHeaders(200, response.getBytes().length);
                 OutputStream os = exchange.getResponseBody();
                 os.write(response.getBytes());
                 os.close();
@@ -257,43 +262,49 @@ public class HandleRequests {
 
         }
 
-        // private String getMessageFromRequest(HttpExchange exchange) throws
-        // IOException {
-        // byte[] requestBodyBytes = exchange.getRequestBody().readAllBytes();
-        // return new String(requestBodyBytes);
-        // }
+    }
+   
+    static public class MessageReceiverToALL implements HttpHandler {
+        @Override
+        public void handle(HttpExchange exchange) throws IOException {
+            if ("POST".equals(exchange.getRequestMethod())) {
 
-        // private void writeMessageToFile(String message) throws IOException {
-        // String caminhoArquivo = ".\\messages.txt";
+                // Lê o corpo da requisição
+                InputStream requestBodyStream = exchange.getRequestBody();
+                String requestBody = new String(requestBodyStream.readAllBytes(), StandardCharsets.UTF_8);
 
-        // try {
-        // System.out.println("ENTROU AQUI");
-        // // Cria um FileWriter para o arquivo especificado
-        // FileWriter fileWriter = new FileWriter(caminhoArquivo);
+                try {
+                    Mensagem newMessage = (Mensagem) dataTools.stringToObj(requestBody);
 
-        // // Cria um BufferedWriter para escrever texto de forma eficiente
-        // BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+                    for (Map.Entry<String, Long> entry : activeClients.entrySet()) {
+                        String key = entry.getKey();
+                        if (key.equals(newMessage.getRemetente())){
+                            continue;
+                        }
+                        newMessage.setDestinatario(key);
+                        MessageManager.addNewMessage(newMessage);
 
-        // // Escreve a mensagem no arquivo
-        // bufferedWriter.write(message);
-        // bufferedWriter.newLine(); // Adiciona uma nova linha
+                        System.out.println("newMessage: " + newMessage.getContent() + " " + newMessage.getDestinatario() + " " + newMessage.getRemetente());
+                    }
+                    
+                } catch (ClassNotFoundException | IOException e) {
+                    System.out.println("[SERVER ERROR]: Message Error!");
+                }
 
-        // // Feche o BufferedWriter
-        // bufferedWriter.close();
+                // Envia uma resposta de sucesso para o cliente
+                String response = "[SERVER SUCCESS]: Message send to All online users!";
+                exchange.sendResponseHeaders(200, response.getBytes().length);
+                OutputStream os = exchange.getResponseBody();
+                os.write(response.getBytes());
+                os.close();
 
-        // } catch (IOException e) {
-        // System.out.println("Ocorreu um erro ao escrever no arquivo.");
-        // e.printStackTrace();
-        // }
-        // }
+            } else {
+                // Método não suportado
+                exchange.sendResponseHeaders(405, -1); // 405 Method Not Allowed
+            }
 
-        // private void sendResponse(HttpExchange exchange, String response) throws
-        // IOException {
-        // exchange.sendResponseHeaders(200, response.getBytes().length);
-        // OutputStream os = exchange.getResponseBody();
-        // os.write(response.getBytes());
-        // os.close();
-        // }
+        }
+
     }
 
     static public class GetOnlineClients implements HttpHandler {

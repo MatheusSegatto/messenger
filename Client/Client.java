@@ -24,7 +24,7 @@ public class Client {
         
         System.out.println(ClientHandler.getListOfUsersConected());
         
-        MessageHandler.chatMessage(userNameDestino);;
+        //MessageHandler.chatMessage(userNameDestino);;
 
 
     }
