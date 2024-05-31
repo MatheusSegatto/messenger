@@ -6,13 +6,23 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import Model.Mensagem;
+import Model.User;
+import Util.dataTools;
+
 public class ArquiveManager {
-    public static void writeFile() {
-        String fileName = "example.txt";
+    public static void writeFile(User userConected, Mensagem message) {
+
+        String fileName = userConected.getId();
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
-            writer.write("Hello, World!");
+            String content;
+            if (message.getRemetente().equals(userConected.getUsername())){
+                content = "[VOCÊ] [" + dataTools.setSecondsToData(message.getTimestamp()) + "]: " + message.getContent();
+            }else{
+                content = "[" + message.getRemetente() + "] [" + dataTools.setSecondsToData(message.getTimestamp()) + "]" + message.getContent();
+            }
+            writer.write(content);
             writer.newLine();
-            writer.write("This is a new line in the text file.");
         } catch (IOException e) {
             e.printStackTrace();
         }

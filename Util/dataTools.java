@@ -5,7 +5,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.Base64;
+import java.util.Date;
 import java.util.TreeMap;
 
 import Model.Mensagem;
@@ -68,6 +70,15 @@ public class dataTools {
         }
         byte[] serializedBytes = byteArrayOutputStream.toByteArray();
         return Base64.getEncoder().encodeToString(serializedBytes);
+    }
+
+    public static String setSecondsToData(Long seconds){
+        Date date = new Date(seconds);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        String formattedDate = sdf.format(date);
+
+        return formattedDate;
     }
 }
 
