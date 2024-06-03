@@ -185,7 +185,7 @@ public class ClientHandler {
         
     }
 
-    private static void pingServer() throws IOException {
+    private static void pingServer() throws IOException, InterruptedException {
         @SuppressWarnings("deprecation")
         URL url = new URL("http://localhost:8000/ping");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -210,6 +210,8 @@ public class ClientHandler {
 
             for (Map.Entry<Long, Mensagem> entry : recevedMessages.entrySet()) {
                 Mensagem mensagens = entry.getValue();
+                ArquiveManager.addMessageToBeWriten(mensagens);
+
                 System.out.println("[" + mensagens.getRemetente() + "]: " + mensagens.getContent());
 
             }
