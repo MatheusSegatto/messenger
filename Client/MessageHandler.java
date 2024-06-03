@@ -12,13 +12,13 @@ import Model.Mensagem;
 import Util.dataTools;
 
 public class MessageHandler {
-    //Criando o chatzin de teste
-    
-    public static void chatMessage(String userNameDestinatario, int option) throws IOException, InterruptedException{
+    // Criando o chatzin de teste
+
+    public static void chatMessage(String userNameDestinatario, int option) throws IOException, InterruptedException {
         Scanner scanner = new Scanner(System.in);
         String destinatario = userNameDestinatario;
         String message;
-        
+
         do {
             System.out.print("Enter a message (type '--EXIT--' to quit): ");
             message = scanner.nextLine();
@@ -26,42 +26,38 @@ public class MessageHandler {
                 if (option == 1) {
                     sendMessage(message, destinatario, "sendMessage");
 
-                }else if(option == 2){
+                } else if (option == 2) {
                     sendMessage(message, destinatario, "sendMessageToALL");
                 }
             }
         } while (!message.equals("--EXIT--"));
-
-        scanner.close();
     }
 
-
-    private static void sendMessage(String message, String destinatario, String type) throws IOException, InterruptedException {
+    private static void sendMessage(String message, String destinatario, String type)
+            throws IOException, InterruptedException {
         @SuppressWarnings("deprecation")
         URL url = new URL("http://localhost:8000/" + type);
 
         HttpURLConnection postConnection = (HttpURLConnection) url.openConnection();
-        
+
         postConnection.setRequestMethod("POST");
         postConnection.setDoOutput(true);
         postConnection.setRequestProperty("Content-Type", "application/json; utf-8");
-        
 
-        //Criando o objeto mensagem
+        // Criando o objeto mensagem
         Mensagem newMensage = new Mensagem(ClientHandler.getConectedUsername(), destinatario, message);
         ArquiveManager.addMessageToBeWriten(newMensage);
         // O que falta nessa fun
 
-        try{
+        try {
             String mensagemFormated = dataTools.objToString(newMensage);
             try (OutputStream os = postConnection.getOutputStream()) {
                 byte[] input = mensagemFormated.getBytes("utf-8");
                 os.write(input, 0, input.length);
             }
-        }catch(IOException e){
+        } catch (IOException e) {
             System.out.println("[CLIENT]: Error Mensagem");
         }
-        
 
         int responseCode = postConnection.getResponseCode();
         if (responseCode == HttpURLConnection.HTTP_OK) {
@@ -74,13 +70,12 @@ public class MessageHandler {
             }
             in.close();
 
-
             System.out.println("Response from Server: " + response.toString());
         } else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
             System.out.println("[SERVER DENIED]: Message wasn´t delivered because this client is not online!");
         } else {
             System.out.println("Request failed with response code: " + responseCode);
-        }  
+        }
     }
 
 }

@@ -119,6 +119,18 @@ public class MenuInteracao {
         commandPrompt.WaitForInteraction(scanner);
     }
 
+    private static void checkOnlineUsers()
+            throws IOException, ClassNotFoundException, InterruptedException {
+        System.out.println(ClientHandler.getListOfUsersConected());
+        commandPrompt.WaitForInteraction(scanner);
+    }
+
+    private static void viewMessageHistory()
+            throws IOException, ClassNotFoundException, InterruptedException {
+        ArquiveManager.readFile();
+        commandPrompt.WaitForInteraction(scanner);
+    }
+
     public static void menuClient() throws IOException, ClassNotFoundException, InterruptedException {
         commandPrompt.clearPrompt();
 
@@ -150,16 +162,14 @@ public class MenuInteracao {
                 case 2:
                     sendMessageToAll();
                     break;
-                    // case 3:
-                    // checkOnlineUsers();
+                case 3:
+                    checkOnlineUsers();
+                    break;
                 case 4:
                     menuChangePassword();
                     break;
-                // case 5:
-                // viewMessageHistory();
-                // break;
                 case 5:
-                    // ver historico de mensagem
+                    viewMessageHistory();
                     break;
                 case 6:
                     System.out.println("Exiting...");
@@ -183,7 +193,7 @@ public class MenuInteracao {
 
     public static void sendMessageToAll() throws ClassNotFoundException, IOException, InterruptedException {
         commandPrompt.clearPrompt();
-       
+
         MessageHandler.chatMessage("", 2);
     }
 
