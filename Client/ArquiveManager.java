@@ -24,6 +24,7 @@ public class ArquiveManager {
         Thread.sleep(5000);
         
         Mensagem message = waitingToBeWritten.get(waitingToBeWritten.firstKey());
+        waitingToBeWritten.remove(waitingToBeWritten.firstKey());
         if (!waitingToBeWritten.isEmpty()){    
             User userConected = ClientHandler.getUserConected();
             String fileName = userConected.getId();
