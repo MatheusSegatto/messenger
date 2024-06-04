@@ -46,8 +46,6 @@ public class MessageHandler {
 
         // Criando o objeto mensagem
         Mensagem newMensage = new Mensagem(ClientHandler.getConectedUsername(), destinatario, message);
-        ControllerArquive.addMessageToBeWriten(newMensage);
-        // O que falta nessa fun
 
         try {
             String mensagemFormated = dataTools.objToString(newMensage);
@@ -56,11 +54,12 @@ public class MessageHandler {
                 os.write(input, 0, input.length);
             }
         } catch (IOException e) {
-            System.out.println("[CLIENT]: Error Mensagem trying to send a Message");
+            System.out.println("[CLIENT]: Error trying to send a Message");
         }
 
         int responseCode = postConnection.getResponseCode();
         if (responseCode == HttpURLConnection.HTTP_OK) {
+            ControllerArquive.addMessageToBeWriten(newMensage);
             BufferedReader in = new BufferedReader(new InputStreamReader(postConnection.getInputStream()));
             String inputLine;
             StringBuffer response = new StringBuffer();
