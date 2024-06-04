@@ -6,18 +6,18 @@ import java.util.Map;
 
 import Model.User;
 
-public class UserManager {
+public class ControllerUser {
     private Map<String, User> users = new HashMap<>();
     private static final String FILE_NAME = "users.ser";
-    private static UserManager instance;
+    private static ControllerUser instance;
 
-    public UserManager() {
+    public ControllerUser() {
         loadUsers();
     }
 
-    public static UserManager getInstance() {
+    public static ControllerUser getInstance() {
         if (instance == null) {
-            instance = new UserManager();
+            instance = new ControllerUser();
         }
         return instance;
     }

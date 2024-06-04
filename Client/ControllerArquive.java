@@ -12,7 +12,7 @@ import Model.Mensagem;
 import Model.User;
 import Util.dataTools;
 
-public class ArquiveManager {
+public class ControllerArquive {
 
     private static TreeMap<Long, Mensagem> waitingToBeWritten = new TreeMap<>();
 
@@ -22,7 +22,6 @@ public class ArquiveManager {
             try {
                 writeFile();
             } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }).start();

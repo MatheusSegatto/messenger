@@ -68,7 +68,7 @@ public class HandleRequests {
 
                 System.out.println("Username: " + username + " Password: " + password);
 
-                UserManager userManager = UserManager.getInstance();
+                ControllerUser userManager = ControllerUser.getInstance();
                 User userAuthenticated = userManager.authenticate(username, password);
                 String response;
 
@@ -116,7 +116,7 @@ public class HandleRequests {
                 System.out.println("Username: " + username + " Old Password: " + oldPassword + " New Password: "
                         + newPassword);
 
-                UserManager userManager = UserManager.getInstance();
+                ControllerUser userManager = ControllerUser.getInstance();
                 boolean passwordChanged = userManager.changePassword(username, oldPassword, newPassword);
 
                 // print de debug
@@ -163,7 +163,7 @@ public class HandleRequests {
 
                 System.out.println("Username: " + username + " Password: " + password);
 
-                UserManager userManager = UserManager.getInstance();
+                ControllerUser userManager = ControllerUser.getInstance();
                 boolean accountCreated = userManager.addUser(username, password);
 
                 // print de debug
@@ -197,7 +197,7 @@ public class HandleRequests {
                 // username e password separados por uma vírgula
                 String username = body;
 
-                UserManager userManager = UserManager.getInstance();
+                ControllerUser userManager = ControllerUser.getInstance();
                 boolean accountDeleted = userManager.removeUser(username);
 
                 String response;
@@ -234,8 +234,8 @@ public class HandleRequests {
             String response;
 
             // Verificar se tem alguma mensagem
-            if (MessageManager.checkIfThereIsMessage(userNameConected)) {
-                TreeMap<Long, Mensagem> messagesReceved = MessageManager.getRecentMessages(userNameConected);
+            if (ControllerMessage.checkIfThereIsMessage(userNameConected)) {
+                TreeMap<Long, Mensagem> messagesReceved = ControllerMessage.getRecentMessages(userNameConected);
                 response = dataTools.serializeTreeMapToString(messagesReceved);
                 exchange.sendResponseHeaders(200, response.getBytes().length);
 
@@ -274,7 +274,7 @@ public class HandleRequests {
                     }
                     System.out.println("newMessage: " + newMessage.getContent() + " " + newMessage.getDestinatario()
                             + " " + newMessage.getRemetente());
-                    MessageManager.addNewMessage(newMessage);
+                    ControllerMessage.addNewMessage(newMessage);
 
                 } catch (ClassNotFoundException | IOException e) {
                     System.out.println("[SERVER ERROR]: Message Error!");
@@ -314,7 +314,7 @@ public class HandleRequests {
                             continue;
                         }
                         newMessage.setDestinatario(key);
-                        MessageManager.addNewMessage(newMessage);
+                        ControllerMessage.addNewMessage(newMessage);
 
                         System.out.println("newMessage: " + newMessage.getContent() + " " + newMessage.getDestinatario()
                                 + " " + newMessage.getRemetente());

@@ -127,7 +127,7 @@ public class MenuInteracao {
 
     private static void viewMessageHistory()
             throws IOException, ClassNotFoundException, InterruptedException {
-        ArquiveManager.readFile();
+        ControllerArquive.readFile();
         commandPrompt.WaitForInteraction(scanner);
     }
 

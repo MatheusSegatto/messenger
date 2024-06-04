@@ -38,7 +38,7 @@ public class ClientHandler {
 
             int responseCode = connection.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) {
-                ArquiveManager.deleteUserFile();
+                ControllerArquive.deleteUserFile();
                 ClientHandler.logOutUser();
                 return true;
             } else {
@@ -224,7 +224,7 @@ public class ClientHandler {
 
             for (Map.Entry<Long, Mensagem> entry : recevedMessages.entrySet()) {
                 Mensagem mensagens = entry.getValue();
-                ArquiveManager.addMessageToBeWriten(mensagens);
+                ControllerArquive.addMessageToBeWriten(mensagens);
 
             }
         }

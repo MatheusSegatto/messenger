@@ -46,7 +46,7 @@ public class MessageHandler {
 
         // Criando o objeto mensagem
         Mensagem newMensage = new Mensagem(ClientHandler.getConectedUsername(), destinatario, message);
-        ArquiveManager.addMessageToBeWriten(newMensage);
+        ControllerArquive.addMessageToBeWriten(newMensage);
         // O que falta nessa fun
 
         try {

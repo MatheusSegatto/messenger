@@ -11,7 +11,7 @@ import Model.Mensagem;
 
 
 
-public class MessageManager implements Serializable{
+public class ControllerMessage implements Serializable{
 
         
     private static HashMap<String, TreeMap<Long,Mensagem>> recentMessages = new HashMap<>();
@@ -34,12 +34,12 @@ public class MessageManager implements Serializable{
     }
 
     public static void addNewMessage(Mensagem newMessage){
-        System.out.println("Array Inicial: " + recentMessages);
+        //System.out.println("Array Inicial: " + recentMessages);
         if (recentMessages.containsKey(newMessage.getDestinatario())){
             TreeMap<Long,Mensagem> tempMap = recentMessages.get(newMessage.getDestinatario());
             tempMap.put(newMessage.getTimestamp(), newMessage);
 
-            System.out.println("Já tem mensagem: "+ recentMessages);
+            //System.out.println("Já tem mensagem: "+ recentMessages);
             //recentMessages.put(newMessage.getDestinatario(), tempMap);
         }else{
             TreeMap<Long,Mensagem> tempMap = new TreeMap<>();
@@ -47,7 +47,7 @@ public class MessageManager implements Serializable{
     
             recentMessages.put(newMessage.getDestinatario(), tempMap);
 
-            System.out.println("Não tem mensagens: "+ recentMessages);
+            //System.out.println("Não tem mensagens: "+ recentMessages);
         }
         
 
