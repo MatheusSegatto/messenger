@@ -56,7 +56,7 @@ public class MessageHandler {
                 os.write(input, 0, input.length);
             }
         } catch (IOException e) {
-            System.out.println("[CLIENT]: Error Mensagem");
+            System.out.println("[CLIENT]: Error Mensagem trying to send a Message");
         }
 
         int responseCode = postConnection.getResponseCode();

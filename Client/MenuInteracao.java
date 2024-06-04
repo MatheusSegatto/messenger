@@ -49,7 +49,7 @@ public class MenuInteracao {
         try {
             authenticateUser(userName, passWord);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("[CLIENT]: Error trying to write in a file!");
         }
     }
 

@@ -378,7 +378,7 @@ public class HandleRequests {
                     for (Map.Entry<String, Long> entry : activeClients.entrySet()) {
                         String clientId = entry.getKey();
                         Long lastActiveTime = entry.getValue();
-                        if (currentTime - lastActiveTime > 10000) { // Tempo limite de inatividade de 10 segundos
+                        if (currentTime - lastActiveTime > 5000) { // Tempo limite de inatividade de 10 segundos
                             System.out.println("Client " + clientId + " disconnected due to inactivity.");
                             tempRemoveArray.add(clientId);
                         }
@@ -386,9 +386,9 @@ public class HandleRequests {
                     for (String item : tempRemoveArray) {
                         activeClients.remove(item);
                     }
-                    Thread.sleep(10000);
+                    Thread.sleep(5000);
                 } catch (InterruptedException e) {
-                    System.out.println("Deu Ruim na Thread de [checkClientActivity]");
+                    System.out.println("[SERVER]: Error trying to monitor the clients!");
                     // e.printStackTrace();
                 }
             }

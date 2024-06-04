@@ -73,7 +73,7 @@ public class ControllerUser {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(FILE_NAME))) {
             users = (HashMap<String, User>) ois.readObject();
         } catch (FileNotFoundException e) {
-            System.out.println("Arquivo de usuários não encontrado. Um novo será criado.");
+            System.out.println("[SERVER]: Arquive, where the users are saved, was not found!.");
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -83,7 +83,7 @@ public class ControllerUser {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_NAME))) {
             oos.writeObject(users);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("[SERVER]: Wasn´t possible to save the Users!");
         }
     }
 }

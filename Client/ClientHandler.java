@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
+import Exceptions.Exceptions;
 import Util.dataTools;
 import Model.Mensagem;
 import Model.User;
@@ -45,7 +46,8 @@ public class ClientHandler {
                 System.out.println("Request failed with response code: " + responseCode);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("[CLIENT]: Error trying to comunicate with Server Side!");
+            
         }
         return false;
     }
@@ -73,7 +75,7 @@ public class ClientHandler {
                 System.out.println("Request failed with response code: " + responseCode);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("[CLIENT]: Error trying to comunicate with Server Side!");
         }
         return false;
     }
@@ -101,7 +103,7 @@ public class ClientHandler {
                 System.out.println("Request failed with response code: " + responseCode);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("[CLIENT]: Error trying to comunicate with Server Side!");
         }
         return false;
 
@@ -139,7 +141,7 @@ public class ClientHandler {
                 return true;
 
             } catch (Exception e) {
-                e.printStackTrace();
+                System.out.println("[CLIENT]: Error trying to comunicate with Server Side!");
             }
 
         } else {
@@ -180,10 +182,10 @@ public class ClientHandler {
                     while (userConected != null) {
                         try {
                             pingServer();
-                            Thread.sleep(5000);
+                            Thread.sleep(2000);
                         } catch (IOException | InterruptedException e) {
 
-                            e.printStackTrace();
+                            System.out.println("[CLIENT]: Error when was trying to execute a Thread!");
                         }
                     }
                 }).start();
@@ -193,8 +195,7 @@ public class ClientHandler {
             }
 
         } catch (Exception e) {
-            System.out.println("FAILED: Wasn't possible to stablish a conection to the Server!");
-            System.exit(0);
+            System.out.println("[CLIENT]: Error trying to comunicate with Server Side!");
         }
 
     }

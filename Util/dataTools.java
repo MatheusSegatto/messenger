@@ -82,33 +82,3 @@ public class dataTools {
     }
 }
 
-// public static String serializeHashMap(Payload payload) {
-// try {
-// ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-// ObjectOutputStream objectOutputStream = new
-// ObjectOutputStream(byteArrayOutputStream);
-// objectOutputStream.writeObject(payload);
-// objectOutputStream.close();
-// return byteArrayOutputStream.toString("ISO-8859-1");
-
-// } catch (IOException e) {
-// e.printStackTrace();
-// return null;
-// }
-// }
-
-// public static Mensagem deserializeHashMap(String payloadString) {
-// try {
-// ByteArrayInputStream byteArrayInputStream = new
-// ByteArrayInputStream(payloadString.getBytes("ISO-8859-1"));
-// ObjectInputStream objectInputStream = new
-// ObjectInputStream(byteArrayInputStream);
-// Mensagem mapa = (Mensagem) objectInputStream.readObject();
-// objectInputStream.close();
-// return mapa;
-
-// }catch (IOException | ClassNotFoundException e) {
-// e.printStackTrace();
-// return null;
-// }
-// }

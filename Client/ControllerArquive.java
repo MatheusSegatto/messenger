@@ -22,7 +22,7 @@ public class ControllerArquive {
             try {
                 writeFile();
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                System.out.println("[CLIENT]: Error when was trying to execute a Thread!");
             }
         }).start();
 
@@ -52,7 +52,7 @@ public class ControllerArquive {
                 writer.write(content);
                 writer.newLine(); // Adiciona uma nova linha antes de escrever o conteúdo
             } catch (IOException e) {
-                e.printStackTrace();
+                System.out.println("[CLIENT]: Error trying to write in a file!");
             }
         }
     }
@@ -85,7 +85,7 @@ public class ControllerArquive {
                 System.out.println(line);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("[CLIENT]: Error trying to read a file!");
         }
     }
 }
