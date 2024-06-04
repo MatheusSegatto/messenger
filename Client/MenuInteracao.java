@@ -49,26 +49,28 @@ public class MenuInteracao {
         try {
             authenticateUser(userName, passWord);
         } catch (IOException e) {
-            System.out.println("[CLIENT]: Error trying to write in a file!");
+            e.printStackTrace();
         }
     }
 
     private static void authenticateUser(String userName, String passWord)
             throws IOException, ClassNotFoundException, InterruptedException {
         while (!ClientHandler.authenticate(userName, passWord)) {
+            commandPrompt.clearPrompt();
             System.out.println("Invalid credentials. Please try again.");
             System.out.println("- USERNAME: ");
             userName = scanner.nextLine();
             System.out.println("- PASSWORD:");
             passWord = scanner.nextLine();
         }
+        commandPrompt.clearPrompt();
         System.out.println("Login successful.");
         commandPrompt.WaitForInteraction(scanner);
         menuClient();
     }
 
     public static void menuInicial() {
-        // commandPrompt.clearPrompt();
+        commandPrompt.clearPrompt();
         System.out.print("============================================\n");
         System.out.print("                  MAIN MENU                 \n");
         System.out.print("============================================\n");
@@ -96,7 +98,7 @@ public class MenuInteracao {
 
     private static void createAccount(String userNameCreate, String passWordCreate, String confirmPassWordCreate) {
         while (!passWordCreate.equals(confirmPassWordCreate)) {
-            // commandPrompt.clearPrompt();
+            commandPrompt.clearPrompt();
             System.out.println("\n\n[ATTENTION]: The passwords are not the same!\n\n");
             commandPrompt.WaitForInteraction(scanner);
             System.out.println("- PASSWORD:");
@@ -127,6 +129,10 @@ public class MenuInteracao {
 
     private static void viewMessageHistory()
             throws IOException, ClassNotFoundException, InterruptedException {
+        System.out.print("============================================\n");
+        System.out.print(" HISTORICO DE MENSAGENS \n");
+        System.out.print("============================================\n");
+        commandPrompt.clearPrompt();
         ControllerArquive.readFile();
         commandPrompt.WaitForInteraction(scanner);
     }
@@ -172,6 +178,7 @@ public class MenuInteracao {
                     viewMessageHistory();
                     break;
                 case 6:
+                    commandPrompt.clearPrompt();
                     System.out.println("Exiting...");
                     ClientHandler.logOutUser();
                     commandPrompt.WaitForInteraction(scanner);
@@ -246,6 +253,13 @@ public class MenuInteracao {
 
     public static void sendMessageToUser() throws ClassNotFoundException, IOException, InterruptedException {
         commandPrompt.clearPrompt();
+        String listOnline = ClientHandler.getListOfUsersConected();
+        if (listOnline.equals("There is no Online Client!")) {
+            System.out.println("No users online.");
+            commandPrompt.WaitForInteraction(scanner);
+            return;
+        }
+
         System.out.println(ClientHandler.getListOfUsersConected());
         System.out.println("Write the username of the person that you want to chat:");
         String destinatario = scanner.nextLine();
