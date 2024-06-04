@@ -70,9 +70,7 @@ public class MessageHandler {
             in.close();
         } else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
             System.out.println("[SERVER DENIED]: Message wasn´t delivered because this client is not online!");
-        } else {
-            System.out.println("Request failed with response code: " + responseCode);
-        }
+        } 
     }
 
 }

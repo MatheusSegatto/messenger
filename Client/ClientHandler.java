@@ -42,9 +42,7 @@ public class ClientHandler {
                 ControllerArquive.deleteUserFile();
                 ClientHandler.logOutUser();
                 return true;
-            } else {
-                System.out.println("Request failed with response code: " + responseCode);
-            }
+            } 
         } catch (IOException e) {
             System.out.println("[CLIENT]: Error trying to comunicate with Server Side!");
             
@@ -71,9 +69,7 @@ public class ClientHandler {
             int responseCode = connection.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 return true;
-            } else {
-                System.out.println("Request failed with response code: " + responseCode);
-            }
+            } 
         } catch (IOException e) {
             System.out.println("[CLIENT]: Error trying to comunicate with Server Side!");
         }
@@ -99,9 +95,7 @@ public class ClientHandler {
             int responseCode = connection.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 return true;
-            } else {
-                System.out.println("Request failed with response code: " + responseCode);
-            }
+            } 
         } catch (IOException e) {
             System.out.println("[CLIENT]: Error trying to comunicate with Server Side!");
         }
@@ -144,9 +138,7 @@ public class ClientHandler {
                 System.out.println("[CLIENT]: Error trying to comunicate with Server Side!");
             }
 
-        } else {
-            System.out.println("Request failed with response code: " + responseCode);
-        }
+        } 
         return false;
     }
 
