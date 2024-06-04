@@ -17,6 +17,7 @@ public class HTTPServerRequests {
         server.createContext("/authenticate", new HandleRequests.AuthenticateUser());
         server.createContext("/changePassword", new HandleRequests.ChangePassword());
         server.createContext("/createAccount", new HandleRequests.CreateAccount());
+        server.createContext("/deleteAccount", new HandleRequests.DeleteAccount());
         server.setExecutor(null);
         server.start();
         HandleRequests.checkClientActivity();

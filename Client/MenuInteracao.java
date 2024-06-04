@@ -138,13 +138,16 @@ public class MenuInteracao {
         int opt = -1;
 
         while (opt != 6) {
+            if (!ClientHandler.isConected()) {
+                return;
+            }
             System.out.print("============================================\n");
             System.out.print(" CLIENT MENU \n");
             System.out.print("============================================\n");
             System.out.print("[1] - Enviar Mensagem Para um Usuário;\n");
             System.out.print("[2] - Enviar Mensagem para Todos os Usuários;\n");
             System.out.print("[3] - Verificar Usuários Online;\n");
-            System.out.print("[4] - Alterar Senha da Conta;\n");
+            System.out.print("[4] - Gerenciar Conta;\n");
             System.out.print("[5] - Ver Histórico de Mensagem;\n");
             System.out.print("[6] - Sair;\n");
             System.out.print("Digite a opção desejada:\n");
@@ -154,9 +157,6 @@ public class MenuInteracao {
 
             switch (opt) {
                 case 1:
-                    // historico de mensagem
-                    //
-                    // sendMessageToUser();
                     sendMessageToUser();
                     break;
                 case 2:
@@ -166,7 +166,7 @@ public class MenuInteracao {
                     checkOnlineUsers();
                     break;
                 case 4:
-                    menuChangePassword();
+                    menuManageAccount();
                     break;
                 case 5:
                     viewMessageHistory();
@@ -181,6 +181,67 @@ public class MenuInteracao {
             }
         }
 
+    }
+
+    public static void menuManageAccount() throws IOException, ClassNotFoundException, InterruptedException {
+        commandPrompt.clearPrompt();
+
+        int opt = -1;
+
+        while (opt != 3) {
+            if (!ClientHandler.isConected()) {
+                return;
+            }
+            System.out.print("============================================\n");
+            System.out.print(" GERENCIAR CONTA \n");
+            System.out.print("============================================\n");
+            System.out.print("[1] - Alterar Senha;\n");
+            System.out.print("[2] - Excluir Conta;\n");
+            System.out.print("[3] - Sair;\n");
+            System.out.print("Digite a opção desejada:\n");
+
+            opt = scanner.nextInt();
+            scanner.nextLine(); // Consumir a nova linha
+
+            switch (opt) {
+                case 1:
+                    menuChangePassword();
+                    break;
+                case 2:
+                    menuDeleteAccount();
+                    break;
+                case 3:
+                    System.out.println("Exiting...");
+                    commandPrompt.WaitForInteraction(scanner);
+                    return;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        }
+    }
+
+    public static void menuDeleteAccount() throws IOException, ClassNotFoundException, InterruptedException {
+        commandPrompt.clearPrompt();
+        System.out.println("============================================");
+        System.out.println("DELETE ACCOUNT");
+        System.out.println("============================================");
+        System.out.println("Are you sure you want to delete your account? (Y/N)");
+        String confirmation = scanner.nextLine();
+
+        if (confirmation.equalsIgnoreCase("N")) {
+            System.out.println("Account deletion canceled.");
+            commandPrompt.WaitForInteraction(scanner);
+            return;
+        }
+
+        if (ClientHandler.deleteAccount()) {
+            System.out.println("Account deleted successfully.");
+
+        } else {
+            System.out.println("Failed to delete account.");
+        }
+
+        commandPrompt.WaitForInteraction(scanner);
     }
 
     public static void sendMessageToUser() throws ClassNotFoundException, IOException, InterruptedException {

@@ -2,6 +2,7 @@ package Client;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -36,11 +37,11 @@ public class ArquiveManager {
 
             // System.out.println("Escrevendo mensagem: " + message.getContent());
             waitingToBeWritten.remove(waitingToBeWritten.firstKey());
-            User userConected = ClientHandler.getUserConected();
-            String fileName = userConected.getId();
+            User userConnected = ClientHandler.getUserConnected();
+            String fileName = userConnected.getId();
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) { // Note o 'true' aqui
                 String content;
-                if (message.getRemetente().equals(userConected.getUsername())) {
+                if (message.getRemetente().equals(userConnected.getUsername())) {
                     content = "[VOCÊ] -> " + "[" + message.getDestinatario() + "] ["
                             + dataTools.setSecondsToData(message.getTimestamp()) + "]: "
                             + message.getContent();
@@ -57,20 +58,28 @@ public class ArquiveManager {
         }
     }
 
-    public static void readFileAndPrint(String fileName) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                System.out.println(line);
+    public static void deleteUserFile() {
+        User userConnected = ClientHandler.getUserConnected();
+        String fileName = userConnected.getId();
+
+        File userFile = new File(fileName);
+
+        if (userFile.exists()) {
+            boolean deleted = userFile.delete();
+
+            if (deleted) {
+                System.out.println("Arquivo do usuário excluído com sucesso.");
+            } else {
+                System.out.println("Não foi possível excluir o arquivo do usuário.");
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } else {
+            System.out.println("O arquivo do usuário não existe.");
         }
     }
 
     public static void readFile() {
-        User userConected = ClientHandler.getUserConected();
-        String fileName = userConected.getId();
+        User userConnected = ClientHandler.getUserConnected();
+        String fileName = userConnected.getId();
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
             String line;
             while ((line = reader.readLine()) != null) {

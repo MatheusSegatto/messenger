@@ -29,9 +29,9 @@ public class HandleRequests {
                 String userNameConected = new String(requestBodyStream.readAllBytes(), StandardCharsets.UTF_8);
 
                 String response = "[SERVER] Client Conected Successfully!";
-                if (activeClients.containsKey(userNameConected)){
+                if (activeClients.containsKey(userNameConected)) {
                     exchange.sendResponseHeaders(401, response.getBytes().length);
-                }else{
+                } else {
                     exchange.sendResponseHeaders(200, response.getBytes().length);
                 }
 
@@ -187,6 +187,38 @@ public class HandleRequests {
         }
     }
 
+    static public class DeleteAccount implements HttpHandler {
+        @Override
+        public void handle(HttpExchange exchange) throws IOException {
+            if ("POST".equals(exchange.getRequestMethod())) {
+                InputStream requestBodyStream = exchange.getRequestBody();
+                String body = new String(requestBodyStream.readAllBytes(), StandardCharsets.UTF_8);
+
+                // username e password separados por uma vírgula
+                String username = body;
+
+                UserManager userManager = UserManager.getInstance();
+                boolean accountDeleted = userManager.removeUser(username);
+
+                String response;
+
+                if (accountDeleted) {
+                    response = "Account deleted successfully";
+                    exchange.sendResponseHeaders(200, response.getBytes().length);
+                } else {
+                    response = "Account deletion failed";
+                    exchange.sendResponseHeaders(401, response.getBytes().length);
+                }
+
+                OutputStream os = exchange.getResponseBody();
+                os.write(response.getBytes());
+                os.close();
+            } else {
+                exchange.sendResponseHeaders(405, -1); // 405 Method Not Allowed
+            }
+        }
+    }
+
     static public class PingHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
@@ -210,7 +242,7 @@ public class HandleRequests {
             } else {
                 // Envia uma resposta de sucesso para o cliente
                 response = "Nenhuma Mensagem Recebida!";
-                exchange.sendResponseHeaders(401, response.getBytes().length);
+                exchange.sendResponseHeaders(204, response.getBytes().length);
             }
 
             OutputStream os = exchange.getResponseBody();
@@ -263,7 +295,7 @@ public class HandleRequests {
         }
 
     }
-   
+
     static public class MessageReceiverToALL implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
@@ -278,15 +310,16 @@ public class HandleRequests {
 
                     for (Map.Entry<String, Long> entry : activeClients.entrySet()) {
                         String key = entry.getKey();
-                        if (key.equals(newMessage.getRemetente())){
+                        if (key.equals(newMessage.getRemetente())) {
                             continue;
                         }
                         newMessage.setDestinatario(key);
                         MessageManager.addNewMessage(newMessage);
 
-                        System.out.println("newMessage: " + newMessage.getContent() + " " + newMessage.getDestinatario() + " " + newMessage.getRemetente());
+                        System.out.println("newMessage: " + newMessage.getContent() + " " + newMessage.getDestinatario()
+                                + " " + newMessage.getRemetente());
                     }
-                    
+
                 } catch (ClassNotFoundException | IOException e) {
                     System.out.println("[SERVER ERROR]: Message Error!");
                 }

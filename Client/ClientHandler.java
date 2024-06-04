@@ -20,6 +20,36 @@ import Model.User;
 public class ClientHandler {
     private static User userConected;
 
+    public static boolean deleteAccount() {
+        try {
+            @SuppressWarnings("deprecation")
+            URL url = new URL("http://localhost:8000/deleteAccount"); // URL do servidor
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+            connection.setRequestMethod("POST");
+            connection.setDoOutput(true);
+
+            String username = userConected.getUsername();
+
+            byte[] outputBytes = username.getBytes(StandardCharsets.UTF_8);
+            OutputStream os = connection.getOutputStream();
+            os.write(outputBytes);
+            os.close();
+
+            int responseCode = connection.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                ArquiveManager.deleteUserFile();
+                ClientHandler.logOutUser();
+                return true;
+            } else {
+                System.out.println("Request failed with response code: " + responseCode);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public static boolean createAccount(String username, String password) {
         try {
             @SuppressWarnings("deprecation")
@@ -38,10 +68,7 @@ public class ClientHandler {
 
             int responseCode = connection.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) {
-                System.out.println("Account created successfully!");
                 return true;
-            } else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
-                System.out.println("Account creation failed");
             } else {
                 System.out.println("Request failed with response code: " + responseCode);
             }
@@ -62,8 +89,6 @@ public class ClientHandler {
 
             String credentials = userConected.getUsername() + "," + currentPassword + "," + newPassword;
 
-            System.out.println(credentials);
-
             byte[] outputBytes = credentials.getBytes(StandardCharsets.UTF_8);
             OutputStream os = connection.getOutputStream();
             os.write(outputBytes);
@@ -71,10 +96,7 @@ public class ClientHandler {
 
             int responseCode = connection.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) {
-                System.out.println("Password changed successfully");
                 return true;
-            } else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
-                System.out.println("Password change failed");
             } else {
                 System.out.println("Request failed with response code: " + responseCode);
             }
@@ -102,8 +124,6 @@ public class ClientHandler {
 
         int responseCode = connection.getResponseCode();
         if (responseCode == HttpURLConnection.HTTP_OK) {
-            System.out.println("Authentication successful");
-
             BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String inputLine;
             StringBuffer response = new StringBuffer();
@@ -116,18 +136,12 @@ public class ClientHandler {
             try {
                 User newUser = (User) dataTools.stringToObj(requestBody);
                 setUserConected(newUser);
-
-                // System.out.println("User: " + newUser.getUsername() + " logged in
-                // successfully");
-
                 return true;
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
-        } else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
-            System.out.println("Authentication failed");
         } else {
             System.out.println("Request failed with response code: " + responseCode);
         }
@@ -168,13 +182,14 @@ public class ClientHandler {
                             pingServer();
                             Thread.sleep(5000);
                         } catch (IOException | InterruptedException e) {
-        
+
                             e.printStackTrace();
                         }
                     }
                 }).start();
-            }else if(responseCode == HttpURLConnection.HTTP_UNAUTHORIZED){
+            } else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
                 System.out.println("Esse login já esta em uso no momento!");
+                ClientHandler.logOutUser();
             }
 
         } catch (Exception e) {
@@ -182,7 +197,6 @@ public class ClientHandler {
             System.exit(0);
         }
 
-        
     }
 
     private static void pingServer() throws IOException, InterruptedException {
@@ -212,13 +226,7 @@ public class ClientHandler {
                 Mensagem mensagens = entry.getValue();
                 ArquiveManager.addMessageToBeWriten(mensagens);
 
-                System.out.println("[" + mensagens.getRemetente() + "]: " + mensagens.getContent());
-
             }
-        } else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
-            // System.out.println("Não há nenhuma mensagem!");
-        } else {
-            System.out.println("Request failed with response code: " + responseCode);
         }
     }
 
@@ -273,7 +281,7 @@ public class ClientHandler {
         return "Request failed with response code: " + responseCode;
     }
 
-    public static User getUserConected() {
+    public static User getUserConnected() {
         return userConected;
     }
 
@@ -288,6 +296,10 @@ public class ClientHandler {
 
     public static void logOutUser() {
         userConected = null;
+    }
+
+    public static boolean isConected() {
+        return userConected != null;
     }
 
 }

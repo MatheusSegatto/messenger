@@ -31,6 +31,15 @@ public class UserManager {
         return true;
     }
 
+    public boolean removeUser(String username) {
+        if (users.containsKey(username)) {
+            users.remove(username);
+            saveUsers();
+            return true;
+        }
+        return false;
+    }
+
     public User authenticate(String username, String password) {
         User user = users.get(username);
 
