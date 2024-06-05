@@ -1,13 +1,12 @@
 package Model;
 
-
 import java.io.Serializable;
 import java.util.UUID;
 
 public class Mensagem implements Serializable {
     private String id = UUID.randomUUID().toString();
-    private String remetente; //Colocar como objetos
-    private String destinatario; //Colocar como objetos
+    private String remetente; // Colocar como objetos
+    private String destinatario; // Colocar como objetos
     private String content;
     private Long timestamp = System.currentTimeMillis();
 
@@ -62,12 +61,4 @@ public class Mensagem implements Serializable {
         this.timestamp = timestamp;
     }
 
-    // public String objToString(){
-    //     StringBuilder sb = new StringBuilder();
-    //     sb.append("{\"Remetente\":" + remetente + "\"Destinatario\":" + destinatario + "\"Content\":" + content + "}");
-
-    //     return sb.toString();
-    // }
-
- 
 }

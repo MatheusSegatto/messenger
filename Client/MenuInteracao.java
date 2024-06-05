@@ -108,8 +108,10 @@ public class MenuInteracao {
         }
 
         while (!ClientHandler.createAccount(userNameCreate, passWordCreate)) {
+            commandPrompt.clearPrompt();
             System.out.println("\n\n[ATTENTION]: User already exists!\n\n");
             commandPrompt.WaitForInteraction(scanner);
+            commandPrompt.clearPrompt();
             System.out.println("- USERNAME: ");
             userNameCreate = scanner.nextLine();
             System.out.println("- PASSWORD:");
@@ -123,6 +125,7 @@ public class MenuInteracao {
 
     private static void checkOnlineUsers()
             throws IOException, ClassNotFoundException, InterruptedException {
+        commandPrompt.clearPrompt();
         System.out.println(ClientHandler.getListOfUsersConected());
         commandPrompt.WaitForInteraction(scanner);
     }
@@ -138,12 +141,12 @@ public class MenuInteracao {
     }
 
     public static void menuClient() throws IOException, ClassNotFoundException, InterruptedException {
-        commandPrompt.clearPrompt();
 
         ClientHandler.stablishConection();
         int opt = -1;
 
         while (opt != 6) {
+            commandPrompt.clearPrompt();
             if (!ClientHandler.isConected()) {
                 return;
             }
@@ -191,11 +194,11 @@ public class MenuInteracao {
     }
 
     public static void menuManageAccount() throws IOException, ClassNotFoundException, InterruptedException {
-        commandPrompt.clearPrompt();
 
         int opt = -1;
 
         while (opt != 3) {
+            commandPrompt.clearPrompt();
             if (!ClientHandler.isConected()) {
                 return;
             }
@@ -218,6 +221,7 @@ public class MenuInteracao {
                     menuDeleteAccount();
                     break;
                 case 3:
+                    commandPrompt.clearPrompt();
                     System.out.println("Exiting...");
                     commandPrompt.WaitForInteraction(scanner);
                     return;
@@ -273,6 +277,7 @@ public class MenuInteracao {
     }
 
     public static void menuChangePassword() {
+        commandPrompt.clearPrompt();
         System.out.println("============================================");
         System.out.println("CHANGE PASSWORD");
         System.out.println("============================================");

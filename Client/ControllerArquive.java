@@ -34,7 +34,6 @@ public class ControllerArquive {
         if (!waitingToBeWritten.isEmpty()) {
             Mensagem message = waitingToBeWritten.get(waitingToBeWritten.firstKey());
 
-            // System.out.println("Escrevendo mensagem: " + message.getContent());
             waitingToBeWritten.remove(waitingToBeWritten.firstKey());
             User userConnected = ClientHandler.getUserConnected();
             String fileName = userConnected.getId();

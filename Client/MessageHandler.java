@@ -12,8 +12,6 @@ import Model.Mensagem;
 import Util.dataTools;
 
 public class MessageHandler {
-    // Criando o chatzin de teste
-
     public static void chatMessage(String userNameDestinatario, int option) throws IOException, InterruptedException {
         Scanner scanner = new Scanner(System.in);
         String destinatario = userNameDestinatario;
@@ -70,7 +68,7 @@ public class MessageHandler {
             in.close();
         } else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
             System.out.println("[SERVER DENIED]: Message wasn´t delivered because this client is not online!");
-        } 
+        }
     }
 
 }

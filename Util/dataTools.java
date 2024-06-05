@@ -13,26 +13,6 @@ import java.util.TreeMap;
 import Model.Mensagem;
 
 public class dataTools {
-
-    // public static String objToString(Object obj) throws IOException {
-    // ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-    // ObjectOutputStream objectOutputStream = new
-    // ObjectOutputStream(byteArrayOutputStream);
-    // objectOutputStream.writeObject(obj);
-    // objectOutputStream.flush();
-    // objectOutputStream.close();
-    // return byteArrayOutputStream.toString("ISO-8859-1");
-    // }
-
-    // public static Object stringToObj(String str) throws IOException,
-    // ClassNotFoundException {
-    // ByteArrayInputStream byteArrayInputStream = new
-    // ByteArrayInputStream(str.getBytes("ISO-8859-1"));
-    // ObjectInputStream objectInputStream = new
-    // ObjectInputStream(byteArrayInputStream);
-    // return objectInputStream.readObject();
-    // }
-
     public static String objToString(Object obj) throws IOException {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
@@ -57,9 +37,8 @@ public class dataTools {
                 return (TreeMap<Long, Mensagem>) in.readObject();
             }
         } catch (IOException | ClassNotFoundException e) {
-            // Lidar com a exceção
             e.printStackTrace();
-            return null; // ou outra ação apropriada
+            return null;
         }
     }
 
@@ -72,7 +51,7 @@ public class dataTools {
         return Base64.getEncoder().encodeToString(serializedBytes);
     }
 
-    public static String setSecondsToData(Long seconds){
+    public static String setSecondsToData(Long seconds) {
         Date date = new Date(seconds);
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
@@ -81,4 +60,3 @@ public class dataTools {
         return formattedDate;
     }
 }
-

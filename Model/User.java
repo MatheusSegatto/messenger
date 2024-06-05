@@ -10,9 +10,6 @@ public class User implements Serializable {
     private String username;
     private String password;
 
-    // TimeStamp //obj
-    //private static TreeMap<Long, Mensagem> exchangedMenssages = new TreeMap<>();
-
     public User(String username, String password) {
         this.id = UUID.randomUUID().toString();
         this.username = username;

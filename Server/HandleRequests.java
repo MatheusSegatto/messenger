@@ -119,8 +119,6 @@ public class HandleRequests {
                 ControllerUser userManager = ControllerUser.getInstance();
                 boolean passwordChanged = userManager.changePassword(username, oldPassword, newPassword);
 
-                // print de debug
-                System.out.println("Password changed: " + passwordChanged);
                 String response;
 
                 if (passwordChanged) {
@@ -166,8 +164,6 @@ public class HandleRequests {
                 ControllerUser userManager = ControllerUser.getInstance();
                 boolean accountCreated = userManager.addUser(username, password);
 
-                // print de debug
-                System.out.println("Account created: " + accountCreated);
                 String response;
 
                 if (accountCreated) {
@@ -389,7 +385,6 @@ public class HandleRequests {
                     Thread.sleep(5000);
                 } catch (InterruptedException e) {
                     System.out.println("[SERVER]: Error trying to monitor the clients!");
-                    // e.printStackTrace();
                 }
             }
         }).start();
