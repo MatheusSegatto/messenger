@@ -260,14 +260,25 @@ public class HandleRequests {
                 try {
                     Mensagem newMessage = (Mensagem) dataTools.stringToObj(requestBody);
                     System.out.println(activeClients);
-                    if (!activeClients.containsKey(newMessage.getDestinatario())) {
+                    if(ControllerUser.checkIfUserExist(newMessage.getDestinatario())){
+                        //CLIENTE Não Esta cadastrado
                         String response = "[SERVER DENIED]";
-                        exchange.sendResponseHeaders(401, response.getBytes().length);
+                        exchange.sendResponseHeaders(404, response.getBytes().length);
                         OutputStream os = exchange.getResponseBody();
                         os.write(response.getBytes());
                         os.close();
                         return;
+
                     }
+                    // if (!activeClients.containsKey(newMessage.getDestinatario())) {
+                    //     String response = "[SERVER DENIED]";
+                    //     exchange.sendResponseHeaders(401, response.getBytes().length);
+                    //     OutputStream os = exchange.getResponseBody();
+                    //     os.write(response.getBytes());
+                    //     os.close();
+                    //     return;
+                    // }
+                    //Preciso criar agora a verificacao de quando iniciar o usuário, verificar se tem mensagem pendente
                     System.out.println("newMessage: " + newMessage.getContent() + " " + newMessage.getDestinatario()
                             + " " + newMessage.getRemetente());
                     ControllerMessage.addNewMessage(newMessage);

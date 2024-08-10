@@ -7,12 +7,19 @@ import java.util.Map;
 import Model.User;
 
 public class ControllerUser {
-    private Map<String, User> users = new HashMap<>();
+    private static Map<String, User> users = new HashMap<>();
     private static final String FILE_NAME = "users.ser";
     private static ControllerUser instance;
 
     public ControllerUser() {
         loadUsers();
+    }
+
+    public static Boolean checkIfUserExist(String userName) {
+        if (users.containsKey(userName)) {
+            return true; // Usuário já existe
+        }
+        return false;
     }
 
     public static ControllerUser getInstance() {

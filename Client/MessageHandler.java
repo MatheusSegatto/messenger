@@ -22,6 +22,7 @@ public class MessageHandler {
             message = scanner.nextLine();
             if (!message.equals("--EXIT--")) {
                 if (option == 1) {
+                    //Parte 1: Nesse caso preciso verificar se esse nome de usuário existe
                     sendMessage(message, destinatario, "sendMessage");
 
                 } else if (option == 2) {
@@ -67,7 +68,10 @@ public class MessageHandler {
             }
             in.close();
         } else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
+            //Parte 2: Criar no Server a capacidade de armazenar mensagens de clientes OFFLINE
             System.out.println("[SERVER DENIED]: Message wasn´t delivered because this client is not online!");
+        }else if (responseCode == HttpURLConnection.HTTP_NOT_FOUND){
+            System.out.println("[SERVER DENIED]: O usuário de destino não está cadastrado em nosso sistema!");
         }
     }
 
