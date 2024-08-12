@@ -22,15 +22,6 @@ public class ControllerMessage implements Serializable {
         TreeMap<Long, Mensagem> tempMap = recentMessages.get(userNameDestinatario);
         recentMessages.remove(userNameDestinatario);
 
-        //debug
-        System.out.println("Verificacao de mensagem recente");
-        System.out.println(tempMap.toString());
-        System.out.println(recentMessages.toString());
-        System.out.println("-------------");
-
-
-
-
         return tempMap;
     }
 
@@ -39,21 +30,14 @@ public class ControllerMessage implements Serializable {
             TreeMap<Long, Mensagem> tempMap = recentMessages.get(newMessage.getDestinatario());
             tempMap.put(newMessage.getTimestamp(), newMessage);
 
-            //debug
-            System.out.println("Ja existe");
-            System.out.println(tempMap.toString());
-            System.out.println(recentMessages.toString());
-            System.out.println("--------------------");
+        
 
         } else {
             TreeMap<Long, Mensagem> tempMap = new TreeMap<>();
             tempMap.put(newMessage.getTimestamp(), newMessage);
             recentMessages.put(newMessage.getDestinatario(), tempMap);
 
-            //debug
-            System.out.println("Novo existe");
-            System.out.println(recentMessages.toString());
-            System.out.println("--------------------");
+      
         }
 
     }
