@@ -18,6 +18,8 @@ public class ControllerArquive {
 
     public static void addMessageToBeWriten(Mensagem messageToBeWritten) throws InterruptedException {
         waitingToBeWritten.put(messageToBeWritten.getTimestamp(), messageToBeWritten);
+        System.out.println(messageToBeWritten.toString());
+        System.out.println(waitingToBeWritten.toString());
         new Thread(() -> {
             try {
                 writeFile();
@@ -33,10 +35,15 @@ public class ControllerArquive {
 
         if (!waitingToBeWritten.isEmpty()) {
             Mensagem message = waitingToBeWritten.get(waitingToBeWritten.firstKey());
+            System.out.println("writeFile");
+            System.out.println(message.toString());
 
             waitingToBeWritten.remove(waitingToBeWritten.firstKey());
+            System.out.println(waitingToBeWritten.toString());
+
             User userConnected = ClientHandler.getUserConnected();
             String fileName = userConnected.getId();
+
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) { // Note o 'true' aqui
                 String content;
                 if (message.getRemetente().equals(userConnected.getUsername())) {

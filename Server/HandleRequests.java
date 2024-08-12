@@ -234,16 +234,16 @@ public class HandleRequests {
                 TreeMap<Long, Mensagem> messagesReceved = ControllerMessage.getRecentMessages(userNameConected);
                 response = dataTools.serializeTreeMapToString(messagesReceved);
                 exchange.sendResponseHeaders(200, response.getBytes().length);
+                OutputStream os = exchange.getResponseBody();
+                os.write(response.getBytes());
+                os.close();
 
             } else {
-                // Envia uma resposta de sucesso para o cliente
-                response = "Nenhuma Mensagem Recebida!";
-                exchange.sendResponseHeaders(204, response.getBytes().length);
+                exchange.sendResponseHeaders(204, -1);
+                exchange.getResponseBody().close();
             }
 
-            OutputStream os = exchange.getResponseBody();
-            os.write(response.getBytes());
-            os.close();
+            
 
         }
     }
@@ -260,7 +260,7 @@ public class HandleRequests {
                 try {
                     Mensagem newMessage = (Mensagem) dataTools.stringToObj(requestBody);
                     System.out.println(activeClients);
-                    if(ControllerUser.checkIfUserExist(newMessage.getDestinatario())){
+                    if(!ControllerUser.checkIfUserExist(newMessage.getDestinatario())){
                         //CLIENTE Não Esta cadastrado
                         String response = "[SERVER DENIED]";
                         exchange.sendResponseHeaders(404, response.getBytes().length);
@@ -268,7 +268,6 @@ public class HandleRequests {
                         os.write(response.getBytes());
                         os.close();
                         return;
-
                     }
                     // if (!activeClients.containsKey(newMessage.getDestinatario())) {
                     //     String response = "[SERVER DENIED]";
@@ -314,9 +313,12 @@ public class HandleRequests {
 
                 try {
                     Mensagem newMessage = (Mensagem) dataTools.stringToObj(requestBody);
+                    Map<String, User> usersRegistered = ControllerUser.getUsers();
 
-                    for (Map.Entry<String, Long> entry : activeClients.entrySet()) {
+
+                    for (Map.Entry<String, User> entry : usersRegistered.entrySet()) {
                         String key = entry.getKey();
+                        System.err.println(key);
                         if (key.equals(newMessage.getRemetente())) {
                             continue;
                         }

@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
-import Exceptions.Exceptions;
 import Util.dataTools;
 import Model.Mensagem;
 import Model.User;
@@ -214,11 +213,13 @@ public class ClientHandler {
             in.close();
 
             TreeMap<Long, Mensagem> recevedMessages = dataTools.deserializeStringToTreeMap(response.toString());
+            System.out.println(recevedMessages.toString());
 
             for (Map.Entry<Long, Mensagem> entry : recevedMessages.entrySet()) {
                 Mensagem mensagens = entry.getValue();
+                System.out.println(mensagens.toString());
                 ControllerArquive.addMessageToBeWriten(mensagens);
-
+                // Thread.sleep(3000);
             }
         }
     }

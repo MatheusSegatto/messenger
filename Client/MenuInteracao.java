@@ -257,14 +257,7 @@ public class MenuInteracao {
 
     public static void sendMessageToUser() throws ClassNotFoundException, IOException, InterruptedException {
         commandPrompt.clearPrompt();
-        String listOnline = ClientHandler.getListOfUsersConected();
-        if (listOnline.equals("There is no Online Client!")) {
-            System.out.println("No users online.");
-            commandPrompt.WaitForInteraction(scanner);
-            return;
-        }
-
-        System.out.println(ClientHandler.getListOfUsersConected());
+        //   
         System.out.println("Write the username of the person that you want to chat:");
         String destinatario = scanner.nextLine();
         MessageHandler.chatMessage(destinatario, 1);

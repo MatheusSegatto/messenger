@@ -14,6 +14,12 @@ public class ControllerUser {
     public ControllerUser() {
         loadUsers();
     }
+    
+    
+    public static Map<String, User> getUsers() {
+        return users;
+    }
+
 
     public static Boolean checkIfUserExist(String userName) {
         if (users.containsKey(userName)) {
