@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.TreeMap;
+import java.util.concurrent.Semaphore;
 
 import Model.Mensagem;
 import Model.User;
@@ -14,12 +15,16 @@ import Util.dataTools;
 
 public class ControllerArquive {
 
+    private static final Semaphore semaphore = new Semaphore(1);
+
     private static TreeMap<Long, Mensagem> waitingToBeWritten = new TreeMap<>();
 
     public static void addMessageToBeWriten(Mensagem messageToBeWritten) throws InterruptedException {
         waitingToBeWritten.put(messageToBeWritten.getTimestamp(), messageToBeWritten);
+        System.out.println("FUNC: addMessageToBeWriten");
         System.out.println(messageToBeWritten.toString());
         System.out.println(waitingToBeWritten.toString());
+        System.out.println("-------------------------");
         new Thread(() -> {
             try {
                 writeFile();
@@ -27,39 +32,48 @@ public class ControllerArquive {
                 System.out.println("[CLIENT]: Error when was trying to execute a Thread!");
             }
         }).start();
-
     }
 
     private static void writeFile() throws InterruptedException {
-        Thread.sleep(5000);
 
-        if (!waitingToBeWritten.isEmpty()) {
-            Mensagem message = waitingToBeWritten.get(waitingToBeWritten.firstKey());
-            System.out.println("writeFile");
-            System.out.println(message.toString());
+        semaphore.acquire();
+        
+        try{
+            Thread.sleep(5000);
 
-            waitingToBeWritten.remove(waitingToBeWritten.firstKey());
-            System.out.println(waitingToBeWritten.toString());
+            if (!waitingToBeWritten.isEmpty()) {
+                Mensagem message = waitingToBeWritten.get(waitingToBeWritten.firstKey());
 
-            User userConnected = ClientHandler.getUserConnected();
-            String fileName = userConnected.getId();
+                System.out.println("writeFile");
+                System.out.println(message.toString());
 
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) { // Note o 'true' aqui
-                String content;
-                if (message.getRemetente().equals(userConnected.getUsername())) {
-                    content = "[VOCÊ] -> " + "[" + message.getDestinatario() + "] ["
-                            + dataTools.setSecondsToData(message.getTimestamp()) + "]: "
-                            + message.getContent();
-                } else {
-                    content = "[" + message.getRemetente() + "] -> [VOCÊ] ["
-                            + dataTools.setSecondsToData(message.getTimestamp())
-                            + "]: " + message.getContent();
+                waitingToBeWritten.remove(waitingToBeWritten.firstKey());
+                System.out.println("REMOVEU DO ARRAY");
+                System.out.println(waitingToBeWritten.toString());
+
+                User userConnected = ClientHandler.getUserConnected();
+                String fileName = userConnected.getId();
+
+                try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) { // Note o 'true' aqui
+                    String content;
+                    if (message.getRemetente().equals(userConnected.getUsername())) {
+                        content = "[VOCÊ] -> " + "[" + message.getDestinatario() + "] ["
+                                + dataTools.setSecondsToData(message.getTimestamp()) + "]: "
+                                + message.getContent();
+                    } else {
+                        content = "[" + message.getRemetente() + "] -> [VOCÊ] ["
+                                + dataTools.setSecondsToData(message.getTimestamp())
+                                + "]: " + message.getContent();
+                    }
+                    writer.write(content);
+                    writer.newLine(); // Adiciona uma nova linha antes de escrever o conteúdo
+                } catch (IOException e) {
+                    System.out.println("[CLIENT]: Error trying to write in a file!");
                 }
-                writer.write(content);
-                writer.newLine(); // Adiciona uma nova linha antes de escrever o conteúdo
-            } catch (IOException e) {
-                System.out.println("[CLIENT]: Error trying to write in a file!");
             }
+        } finally {
+            // Libera a permissão após a escrita no arquivo
+            semaphore.release();
         }
     }
 

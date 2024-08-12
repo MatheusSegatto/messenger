@@ -219,7 +219,6 @@ public class ClientHandler {
                 Mensagem mensagens = entry.getValue();
                 System.out.println(mensagens.toString());
                 ControllerArquive.addMessageToBeWriten(mensagens);
-                // Thread.sleep(3000);
             }
         }
     }
