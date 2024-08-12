@@ -21,10 +21,7 @@ public class ControllerArquive {
 
     public static void addMessageToBeWriten(Mensagem messageToBeWritten) throws InterruptedException {
         waitingToBeWritten.put(messageToBeWritten.getTimestamp(), messageToBeWritten);
-        System.out.println("FUNC: addMessageToBeWriten");
-        System.out.println(messageToBeWritten.toString());
-        System.out.println(waitingToBeWritten.toString());
-        System.out.println("-------------------------");
+
         new Thread(() -> {
             try {
                 writeFile();
@@ -37,19 +34,13 @@ public class ControllerArquive {
     private static void writeFile() throws InterruptedException {
 
         semaphore.acquire();
-        
+
         try{
             Thread.sleep(5000);
 
             if (!waitingToBeWritten.isEmpty()) {
                 Mensagem message = waitingToBeWritten.get(waitingToBeWritten.firstKey());
 
-                System.out.println("writeFile");
-                System.out.println(message.toString());
-
-                waitingToBeWritten.remove(waitingToBeWritten.firstKey());
-                System.out.println("REMOVEU DO ARRAY");
-                System.out.println(waitingToBeWritten.toString());
 
                 User userConnected = ClientHandler.getUserConnected();
                 String fileName = userConnected.getId();

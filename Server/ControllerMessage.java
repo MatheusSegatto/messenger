@@ -54,7 +54,6 @@ public class ControllerMessage implements Serializable {
             System.out.println("Novo existe");
             System.out.println(recentMessages.toString());
             System.out.println("--------------------");
-
         }
 
     }
