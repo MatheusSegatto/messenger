@@ -35,12 +35,12 @@ public class ControllerArquive {
 
         semaphore.acquire();
 
-        try{
+        try {
             Thread.sleep(5000);
 
             if (!waitingToBeWritten.isEmpty()) {
-                Mensagem message = waitingToBeWritten.get(waitingToBeWritten.firstKey());
-
+                Long firstKey = waitingToBeWritten.firstKey();
+                Mensagem message = waitingToBeWritten.get(firstKey);
 
                 User userConnected = ClientHandler.getUserConnected();
                 String fileName = userConnected.getId();
@@ -61,6 +61,7 @@ public class ControllerArquive {
                 } catch (IOException e) {
                     System.out.println("[CLIENT]: Error trying to write in a file!");
                 }
+                waitingToBeWritten.remove(firstKey);
             }
         } finally {
             // Libera a permissão após a escrita no arquivo
