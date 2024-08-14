@@ -36,7 +36,7 @@ public class ControllerArquive {
         semaphore.acquire();
 
         try {
-            Thread.sleep(5000);
+            Thread.sleep(3000);
 
             if (!waitingToBeWritten.isEmpty()) {
                 Long firstKey = waitingToBeWritten.firstKey();
@@ -48,9 +48,16 @@ public class ControllerArquive {
                 try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) { // Note o 'true' aqui
                     String content;
                     if (message.getRemetente().equals(userConnected.getUsername())) {
-                        content = "[VOCÊ] -> " + "[" + message.getDestinatario() + "] ["
+                        if (message.getDestinatario().equals("")){
+                            content = "[VOCÊ] -> " + "[TODOS CADASTRADOS] ["
                                 + dataTools.setSecondsToData(message.getTimestamp()) + "]: "
                                 + message.getContent();
+
+                        }else{
+                            content = "[VOCÊ] -> " + "[" + message.getDestinatario() + "] ["
+                                + dataTools.setSecondsToData(message.getTimestamp()) + "]: "
+                                + message.getContent();
+                        }
                     } else {
                         content = "[" + message.getRemetente() + "] -> [VOCÊ] ["
                                 + dataTools.setSecondsToData(message.getTimestamp())

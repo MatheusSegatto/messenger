@@ -67,9 +67,6 @@ public class MessageHandler {
                 response.append(inputLine);
             }
             in.close();
-        // } else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
-        //     //Parte 2: Criar no Server a capacidade de armazenar mensagens de clientes OFFLINE
-        //     System.out.println("[SERVER DENIED]: Message wasn´t delivered because this client is not online!");
         }else if (responseCode == HttpURLConnection.HTTP_NOT_FOUND){
             System.out.println("[SERVER DENIED]: The recipient is not registered in our system!");
         }
